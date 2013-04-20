@@ -12,12 +12,19 @@ Enemies:
 + Spiders (not pictured) will move toward the player fast.
 + Endermen (top-left) will teleport randomly in a limited radius, and never right on top of the player (but they can get close.)
 + Skeletons (top-right) will circle the player and shoot small projectiles at the player.
+Additionally, there will be hearts that randomly appear, which will replenish the player's health.  These hearts will remain stationary.
 
 
 ## Gameplay
 The user will move the mouse to directly control the on-screen Player's position, avoiding the mobs for as long as possible.
 
 
+## Score
+The score continuously goes up.  The final score is determined by the score's value when the player dies.
+
+
+## Player's Lives
+The player will have one life but multiple health points.  Different enemies will do different amounts of damage.
 
 
 
