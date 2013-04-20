@@ -14,6 +14,10 @@ Enemies:
 + Skeletons (top-right) will circle the player and shoot small projectiles at the player.
 
 
+## Gameplay
+The user will move the mouse to directly control the on-screen Player's position, avoiding the mobs for as long as possible.
+
+
 
 
 
