@@ -27,6 +27,17 @@ The score continuously goes up.  The final score is determined by the score's va
 The player will have one life but multiple health points.  Different enemies will do different amounts of damage.
 
 
+## User Interface
+#### Sketch:
+![UI Sketch](http://i.imgur.com/3BQU3em.png "UI Sketch")
+
+User interface elements:
++ NEW GAME button starts a new game, prompting the user first if a game is in progress
++ QUIT button closes the game, prompting the user first if a game is in progress
++ Middle region is gameplay region (cursor pictured on top of the Player character)
++ Below middle region is the Player's health and score.
+
+
 
 
 
