@@ -1,4 +1,31 @@
 # Game Design Document
+My game will be a continuous survival game whose characters are based on the Minecraft characters (mobs)
+
+## Entities
+#### Example of game characters:
+![Minecraft Mobs](http://fc09.deviantart.net/fs71/f/2012/153/2/c/minecraft_mob_magnets_by_vandonovan-d51yxlt.jpg "Minecraft Characters")
+
+Each character will move differently.  The Player (bottom-right in the above picture) will be freely controlled by the mouse, independent of the clock.
+Enemies:
++ Zombies (top-middle) will move slowly, always toward the player.
++ Creepers (middle-left) will move slightly faster toward the player and explode if they get close.
++ Spiders (not pictured) will move toward the player fast.
++ Endermen (top-left) will teleport randomly in a limited radius, and never right on top of the player (but they can get close.)
++ Skeletons (top-right) will circle the player and shoot small projectiles at the player.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 This is a place holder for your game design document. You are advised to write your document in [Markdown](http://daringfireball.net/projects/markdown/) and the following section will show you how to write a document using Markdown markup.
 
 Alternativley, you can write your document in plain text if you wish.
