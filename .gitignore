@@ -11,3 +11,20 @@
 *.lai
 *.la
 *.a
+
+
+# Qt generated
+*.pro
+moc_*
+Makefile
+
+# Doxygen generated
+config.txt
+html/*
+latex/*
+
+# Project specific executables
+game_gauderma
+
+# OS temporary files
+*~
