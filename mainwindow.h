@@ -8,6 +8,7 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QLabel>
+#include <QMessageBox>
 
 #include "gamespace.h"
 
@@ -25,14 +26,14 @@ class MainWindow : public QWidget
 		void quitGame();
 	
 	private: // UI elements
-		QVBoxLayout* mainLayoutUI;
-			QHBoxLayout* startQuitLayoutUI;
+		QHBoxLayout* mainLayoutUI;
+			QVBoxLayout* leftLayoutUI;
 				QPushButton* startButtonUI;
 				QPushButton* quitButtonUI;
 			QLabel* statusLabelUI;
 			QHBoxLayout* gameSpaceLayoutUI;
 				GameSpace* gameSpaceUI;
-			QHBoxLayout* lowerLayoutUI;
+			QVBoxLayout* rightLayoutUI;
 				QLabel* userNameUI;
 				QLabel* scoreUI;
 };

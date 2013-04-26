@@ -11,41 +11,36 @@ MainWindow::MainWindow()
 	// Declarations:
 		
 	// Layout and GUI items
-	mainLayoutUI = new QVBoxLayout(this);
-		startQuitLayoutUI = new QHBoxLayout(this); //this line outputs at runtime: QLayout: Attempting to add QLayout "" to MainWindow "", which already has a layout
+	mainLayoutUI = new QHBoxLayout;
+		leftLayoutUI = new QVBoxLayout;
+			leftLayoutUI->setAlignment(Qt::AlignTop);
 			startButtonUI = new QPushButton("Start New Game", this);
 				connect(startButtonUI, SIGNAL(clicked()), this, SLOT(startNewGame()));
-			startQuitLayoutUI->addWidget(startButtonUI);
+			leftLayoutUI->addWidget(startButtonUI);
 			quitButtonUI = new QPushButton("Quit", this);
 				connect(quitButtonUI, SIGNAL(clicked()), this, SLOT(quitGame()));
-			startQuitLayoutUI->addWidget(quitButtonUI);
-		mainLayoutUI->addLayout(startQuitLayoutUI);
+			leftLayoutUI->addWidget(quitButtonUI);
+		mainLayoutUI->addLayout(leftLayoutUI);
 		statusLabelUI = new QLabel("", this);
 			statusLabelUI->setAlignment(Qt::AlignHCenter);
 		mainLayoutUI->addWidget(statusLabelUI);
-		gameSpaceLayoutUI = new QHBoxLayout(this); //this line outputs at runtime: QLayout: Attempting to add QLayout "" to MainWindow "", which already has a layout
-cout << "yyyyyyyyyyyy1" << endl;
+		gameSpaceLayoutUI = new QHBoxLayout;
+			gameSpaceLayoutUI->setAlignment(Qt::AlignHCenter);
 			gameSpaceUI = new GameSpace(this);
-cout << "yyyyyyyyyyyy2" << endl;
-				gameSpaceLayoutUI->setAlignment(Qt::AlignHCenter);
-cout << "yyyyyyyyyyyy3" << endl;
 				gameSpaceUI->setFixedWidth(WINDOW_MAX_X);
-cout << "yyyyyyyyyyyy4" << endl;
 				gameSpaceUI->setFixedHeight(gameSpaceUI->width());
-cout << "yyyyyyyyyyyy5" << endl;
 			gameSpaceLayoutUI->addWidget(gameSpaceUI);
-cout << "yyyyyyyyyyyy0" << endl;
 		mainLayoutUI->addLayout(gameSpaceLayoutUI);
-		lowerLayoutUI = new QHBoxLayout(this);
+		rightLayoutUI = new QVBoxLayout;
 			//health
 			userNameUI = new QLabel("", this);
 				userNameUI->setAlignment(Qt::AlignRight);
-			lowerLayoutUI->addWidget(userNameUI);
+			rightLayoutUI->addWidget(userNameUI);
 			scoreUI = new QLabel("", this);
 				scoreUI->setAlignment(Qt::AlignLeft);
-			lowerLayoutUI->addWidget(scoreUI);
-		mainLayoutUI->addLayout(lowerLayoutUI);
-	//this->setLayout(mainLayoutUI);
+			rightLayoutUI->addWidget(scoreUI);
+		mainLayoutUI->addLayout(rightLayoutUI);
+	this->setLayout(mainLayoutUI);
 }
 
 
@@ -57,7 +52,18 @@ cout << "yyyyyyyyyyyy0" << endl;
 */
 void MainWindow::startNewGame()
 {
-	cout << "Hi" << endl;
+	// Check if a game is in progress
+	if(gameSpaceUI->gameInProgress())
+	{
+		QMessageBox newGamePrompt;
+		newGamePrompt.setWindowTitle("Start New Game");
+		newGamePrompt.setText("Game is in progress.");
+		newGamePrompt.setInformativeText("Do you really want to start new game?");
+		newGamePrompt.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+		newGamePrompt.setDefaultButton(QMessageBox::No);
+		int choice = newGamePrompt.exec();
+		if(choice==QMessageBox::No) return;
+	}
 }
 
 /** Prompt the user to quit
@@ -65,8 +71,16 @@ void MainWindow::startNewGame()
 void MainWindow::quitGame()
 {
 	// Check if a game is in progress
-	// If not, just quit
-	//qapp->quit()
-	// If a game is in progress, 
-	cout << "quit" << endl;
+	if(gameSpaceUI->gameInProgress())
+	{
+		QMessageBox quitPrompt;
+		quitPrompt.setWindowTitle("Quit Game");
+		quitPrompt.setText("Game is in progress.");
+		quitPrompt.setInformativeText("Do you really want to quit?");
+		quitPrompt.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+		quitPrompt.setDefaultButton(QMessageBox::No);
+		int choice = quitPrompt.exec();
+		if(choice==QMessageBox::No) return;
+	}
+	qApp->quit();
 }

@@ -19,21 +19,25 @@ class GameSpace : public QGraphicsView
 	Q_OBJECT
 	
 	public:
-		GameSpace(MainWindow* parent);
+		explicit GameSpace(MainWindow* parent);
+		void startNewGame();
 		// Accessors
 		/** Get a pointer to the scene */
 		QGraphicsScene* scene() { return scene_; }
+		/** Get whether a game is currently in progress */
+		bool gameInProgress() { return gameInProgress_; }
 	private:
 		QGraphicsScene* scene_;
+		QPixmap* steve_;
 		std::vector<Thing*> enemies_;
-		std::vector<Thing*> items_;
 		QPixmap* zombie_;
 		QPixmap* spider_;
 		QPixmap* creeper_;
 		QPixmap* skeleton_;
 		QPixmap* enderman_;
+		std::vector<Thing*> items_;
 		QPixmap* heart_;
-		QPixmap* steve_;
+		bool gameInProgress_;
 };
 
 #endif // GAMESPACE_H
