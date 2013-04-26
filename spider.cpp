@@ -1,6 +1,6 @@
 #include "enemies.h"
 
-Zombie::Zombie(GameSpace* parent)
+Spider::Spider(GameSpace* parent)
 :
 	Thing(parent)
 {
@@ -9,7 +9,7 @@ Zombie::Zombie(GameSpace* parent)
 
 /** 
 */
-void Zombie::update()
+void Spider::update()
 {
 	
 }
