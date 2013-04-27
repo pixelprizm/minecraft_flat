@@ -1,15 +1,15 @@
 #include "items.h"
 
-Heart::Heart(GameSpace* parent)
+Heart::Heart(QPixmap& picture, GameSpace* parent, Thing* player)
 :
-	Thing(parent)
+	Thing(picture, parent, player)
 {
 	
 }
 
 /** 
 */
-void Heart::update()
+void Heart::updatePrecisePos(int windowMaxX, int windowMaxY)
 {
 	
 }

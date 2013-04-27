@@ -4,7 +4,7 @@
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
 
-class GameSpace; // so that we can use a pointer to the GameSpace for the scene
+class GameSpace; // so that we can use a pointer to the GameSpace for the parent
 
 /** This is an abstract base class for enemies, items, and the player.
 */
@@ -13,23 +13,27 @@ class Thing : public QGraphicsPixmapItem
 	//Q_OBJECT
 	
 	public: // member functions
-		Thing(GameSpace* parent); // constructor that takes in a pointer to the parent
+		Thing(QPixmap& picture, GameSpace* parent, Thing* player); // constructor that takes in a pointer to the parent
 		~Thing();
 		
-		/** This is to be called every timer and implemented differently for each thing.
-		*     Each enemy should handle moving and attacking with this function; items can simply hold still if needed.
-		*/
-		virtual void update() =0;
+		// Modifiers
+		void setPos(double x, double y);
+		/** Each Thing should specify how to move based on this function; they should set xPrecise_ and yPrecise_ so that the Thing will be moved when the timer triggers. */
+		virtual void updatePrecisePos(int windowMaxX, int windowMaxY) =0;
+		void move();
 	
-	protected: // data members
-		/** enemy's current health, unused for items */
-		int health_;
-		/** pointer to the GameSpace this thing is in */
-		GameSpace* parent_;
-		/** x velocity (possibly unused by items) */
-		double vX;
-		/** y velocity (possibly unused by items) */
-		double vY;
+	protected:
+		// Data members
+			/** enemy's current health, unused for items */
+			int health_;
+			/** pointer to the GameSpace this thing is in */
+			GameSpace* parent_;
+			/** x position to move to when the timer updates (this is here so we can use movement at less than 1 pixel per timer without slowing timer) */
+			double xPrecise_;
+			/** y position to move to when the timer updates */
+			double yPrecise_;
+			/** pointer to the player, used in enemies' movement */
+			Thing* player_;
 };
 
 

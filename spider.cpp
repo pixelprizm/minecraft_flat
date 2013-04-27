@@ -1,15 +1,15 @@
 #include "enemies.h"
 
-Spider::Spider(GameSpace* parent)
+Spider::Spider(QPixmap& picture, GameSpace* parent, Thing* player)
 :
-	Thing(parent)
+	Thing(picture, parent, player)
 {
 	
 }
 
 /** 
 */
-void Spider::update()
+void Spider::updatePrecisePos(int windowMaxX, int windowMaxY)
 {
 	
 }

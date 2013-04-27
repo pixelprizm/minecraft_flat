@@ -8,8 +8,8 @@
 class Zombie : public Thing
 {
 	public: // member functions
-		Zombie(GameSpace* parent);
-		void update();
+		Zombie(QPixmap& picture, GameSpace* parent, Thing* player);
+		void updatePrecisePos(int windowMaxX, int windowMaxY);
 	
 	private: // data members
 };
@@ -19,8 +19,8 @@ class Zombie : public Thing
 class Spider : public Thing
 {
 	public: // member functions
-		Spider(GameSpace* parent);
-		void update();
+		Spider(QPixmap& picture, GameSpace* parent, Thing* player);
+		void updatePrecisePos(int windowMaxX, int windowMaxY);
 	
 	private: // data members
 };
@@ -30,10 +30,12 @@ class Spider : public Thing
 class Creeper : public Thing
 {
 	public: // member functions
-		Creeper(GameSpace* parent);
-		void update();
+		Creeper(QPixmap& picture, GameSpace* parent, Thing* player);
+		void updatePrecisePos(int windowMaxX, int windowMaxY);
 	
 	private: // data members
+		double vX_;
+		double vY_;
 };
 
 /** Skeleton enemy
@@ -41,8 +43,8 @@ class Creeper : public Thing
 class Skeleton : public Thing
 {
 	public: // member functions
-		Skeleton(GameSpace* parent);
-		void update();
+		Skeleton(QPixmap& picture, GameSpace* parent, Thing* player);
+		void updatePrecisePos(int windowMaxX, int windowMaxY);
 	
 	private: // data members
 };
@@ -52,8 +54,8 @@ class Skeleton : public Thing
 class Enderman : public Thing
 {
 	public: // member functions
-		Enderman(GameSpace* parent);
-		void update();
+		Enderman(QPixmap& picture, GameSpace* parent, Thing* player);
+		void updatePrecisePos(int windowMaxX, int windowMaxY);
 	
 	private: // data members
 };

@@ -8,8 +8,8 @@
 class Heart : public Thing
 {
 	public:
-		Heart(GameSpace* parent);
-		void update();
+		Heart(QPixmap& picture, GameSpace* parent, Thing* player);
+		void updatePrecisePos(int windowMaxX, int windowMaxY);
 	
 	private: // data members
 };

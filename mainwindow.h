@@ -12,7 +12,8 @@
 
 #include "gamespace.h"
 
-#define WINDOW_MAX_X 600
+#define WINDOW_MAX_X 800
+#define WINDOW_MAX_Y WINDOW_MAX_X*3/4
 
 class MainWindow : public QWidget
 {
@@ -24,18 +25,19 @@ class MainWindow : public QWidget
 	public slots:
 		void startNewGame();
 		void quitGame();
+		void pauseGame();
 	
 	private: // UI elements
 		QHBoxLayout* mainLayoutUI;
 			QVBoxLayout* leftLayoutUI;
 				QPushButton* startButtonUI;
 				QPushButton* quitButtonUI;
-			QLabel* statusLabelUI;
-			QHBoxLayout* gameSpaceLayoutUI;
-				GameSpace* gameSpaceUI;
-			QVBoxLayout* rightLayoutUI;
+				QPushButton* pauseButtonUI;
 				QLabel* userNameUI;
 				QLabel* scoreUI;
+			QLabel* statusLabelUI;
+			QVBoxLayout* gameSpaceLayoutUI;
+				GameSpace* gameSpaceUI;
 };
 
 #endif // MAINWINDOW_H

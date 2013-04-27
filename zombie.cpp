@@ -1,15 +1,15 @@
 #include "enemies.h"
 
-Zombie::Zombie(GameSpace* parent)
+Zombie::Zombie(QPixmap& picture, GameSpace* parent, Thing* player)
 :
-	Thing(parent)
+	Thing(picture, parent, player)
 {
 	
 }
 
 /** 
 */
-void Zombie::update()
+void Zombie::updatePrecisePos(int windowMaxX, int windowMaxY)
 {
 	
 }

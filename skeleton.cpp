@@ -1,15 +1,15 @@
 #include "enemies.h"
 
-Skeleton::Skeleton(GameSpace* parent)
+Skeleton::Skeleton(QPixmap& picture, GameSpace* parent, Thing* player)
 :
-	Thing(parent)
+	Thing(picture, parent, player)
 {
 	
 }
 
 /** 
 */
-void Skeleton::update()
+void Skeleton::updatePrecisePos(int windowMaxX, int windowMaxY)
 {
 	
 }

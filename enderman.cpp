@@ -1,15 +1,15 @@
 #include "enemies.h"
 
-Enderman::Enderman(GameSpace* parent)
+Enderman::Enderman(QPixmap& picture, GameSpace* parent, Thing* player)
 :
-	Thing(parent)
+	Thing(picture, parent, player)
 {
 	
 }
 
 /** 
 */
-void Enderman::update()
+void Enderman::updatePrecisePos(int windowMaxX, int windowMaxY)
 {
 	
 }
