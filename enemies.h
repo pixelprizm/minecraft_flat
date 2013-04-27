@@ -3,6 +3,8 @@
 
 #include "thing.h"
 
+
+
 /** Zombie enemy
 */
 class Zombie : public Thing
@@ -15,6 +17,8 @@ class Zombie : public Thing
 		double speedLimit_;
 };
 
+
+
 /** Spider enemy
 */
 class Spider : public Thing
@@ -25,6 +29,8 @@ class Spider : public Thing
 	
 	private: // data members
 };
+
+
 
 /** Creeper enemy
 */
@@ -39,6 +45,8 @@ class Creeper : public Thing
 		double vY_;
 };
 
+
+
 /** Skeleton enemy
 */
 class Skeleton : public Thing
@@ -48,7 +56,11 @@ class Skeleton : public Thing
 		void updatePrecisePos(int windowMaxX, int windowMaxY);
 	
 	private: // data members
+		double speedLimit_;
+		double angleChange_;
 };
+
+
 
 /** Enderman enemy
 */

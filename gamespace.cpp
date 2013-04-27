@@ -5,7 +5,8 @@
 
 //DEBUG
 #include <iostream>
-using namespace std;
+
+
 
 /** Constructor. Loads pictures and builds the game area.
 */
@@ -13,25 +14,30 @@ GameSpace::GameSpace(MainWindow* parent)
 :
 	QGraphicsView(parent)
 {
+	parent_ = parent;
 	gameInProgress_ = false;
+	
+	// Initialize scene
 	scene_ = new QGraphicsScene;
 	setScene(scene_);
 	
-	// Create the background
+	// Create the background (important that this is the first image added to the scene)
 	backgroundPic_ = new QPixmap("images/sand_background_800.png");
 	backgroundPicItem_ = new QGraphicsPixmapItem(*backgroundPic_);
 	scene_->addItem(backgroundPicItem_);
 	
+	// Initialize player
+	stevePic_ = new QPixmap("images/steve.png");
 	player_ = NULL; // we will initialize Steve in the first game
 	
-	// Initialize pixmaps for Things, and seed random number
-	srand(std::time(NULL));
-	stevePic_ = new QPixmap("images/steve.png");
+	// Initialize pixmaps for enemies
 	zombiePic_ = new QPixmap("images/zombie.png");
 	spiderPic_ = new QPixmap("images/spider.png");
 	creeperPic_ = new QPixmap("images/creeper.png");
 	skeletonPic_ = new QPixmap("images/skeleton.png");
 	endermanPic_ = new QPixmap("images/enderman.png");
+	
+	// Initialize heart item
 	heartPic_ = new QPixmap("images/heart.png");
 	
 	// Initialize timer
@@ -41,8 +47,8 @@ GameSpace::GameSpace(MainWindow* parent)
 	
 	// Initialize values used in controlling speed of the game
 	timerCount_ = 0;
-	period_ = 20;
-	periodCount_ = 0;
+	period_ = 30;
+	periodCount_ = 1;
 	
 	// Set mouse flags
 	setMouseTracking(true);
@@ -84,12 +90,13 @@ void GameSpace::startNewGame()
 	
 	if(player_) delete player_; // get rid of old player so we create a new one, correctly initialized
 	
+	// Initialize player values
 	player_ = new Steve(*stevePic_, this);
 	player_->setPos(400,300);
-	//DEBUG
-		cout << "Steve: " << player_->x() << " " << player_->y() << endl;
-
 	scene_->addItem(player_);
+	
+	// Initialize label that displays number of lives
+	parent()->livesUI->setText(QString::number(player_->lives()));
 	
 	// If there was a previous game, get rid of the enemies (they remove themselves from the scene)
 	if(gameInProgress_)
@@ -191,24 +198,31 @@ void GameSpace::handleTimer()
 			// Initialize the item's position
 			newItem->setPos
 			(
-				rand()%(width()  - heartPic_->width()  - 1),
-				rand()%(height() - heartPic_->height() - 1)
+				rand()%(width()  - heartPic_->width()/2  - 1),
+				rand()%(height() - heartPic_->height()/2 - 1)
 			);
 			items_.push_back(newItem);
 			scene_->addItem(newItem);
 		}
 		
 		// Update each Thing
-		for(std::vector<Thing*>::iterator it = enemies_.begin(); it != enemies_.end(); ++it)
+		for(unsigned int i = 0; i < enemies_.size(); i++)
 		{
-			(*it)->updatePrecisePos(WINDOW_MAX_X, WINDOW_MAX_Y);
-			(*it)->move();
+			enemies_[i]->updatePrecisePos(WINDOW_MAX_X, WINDOW_MAX_Y);
+			enemies_[i]->move();
+			
+			if(enemies_[i]->collidesWithItem(player_))
+			{
+				player_->takeDamage(1);
+				delete enemies_[i];
+				enemies_.erase(enemies_.begin()+i);
+			}
 		}
 		player_->updatePrecisePos(WINDOW_MAX_X, WINDOW_MAX_Y);
 		player_->move();
 		
 		// Every certain number of periods, speed up the enemies by decreasing the period
-		if(periodCount_ % 200 == 0)
+		if(periodCount_ % 300 == 0)
 		{
 			if(period_ > 2) period_--;
 		}

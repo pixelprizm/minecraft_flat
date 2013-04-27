@@ -2,11 +2,13 @@
 
 
 
+/** 
+*/
 Enderman::Enderman(QPixmap& picture, GameSpace* parent, Thing* player)
 :
 	Thing(picture, parent, player)
 {
-	
+	setOffset(-pixmap().width()/2, -pixmap().height()/2);
 }
 
 /** 
@@ -21,10 +23,16 @@ void Enderman::updatePrecisePos(int windowMaxX, int windowMaxY)
 		double deltaY = r * std::sin(th);
 		xPrecise_ += deltaX;
 		yPrecise_ += deltaY;
-		// Check for going outside the map
-		if(xPrecise_<0) { deltaX = -deltaX; xPrecise_+=deltaX; }
-		if(yPrecise_<0) { deltaY = -deltaY; yPrecise_+=deltaY; }
-		if(xPrecise_+pixmap().width()  > windowMaxX) { deltaX = -deltaX; xPrecise_+=deltaX; }
-		if(yPrecise_+pixmap().height() > windowMaxY) { deltaY = -deltaY; yPrecise_+=deltaY; }
+		
+		xPrecise_ += (player_->x() - x()) / 10;
+		yPrecise_ += (player_->y() - y()) / 10;
+		
+		// Make sure enderman does not go offscreen
+		int halfWidth = pixmap().width()/2;
+		int halfHeight = pixmap().height()/2;
+		if(xPrecise_ - halfWidth  < 0         ) { xPrecise_ -= deltaX; } // left
+		if(yPrecise_ - halfHeight < 0         ) { yPrecise_ -= deltaY; } // top
+		if(xPrecise_ + halfWidth  > windowMaxX) { xPrecise_ -= deltaX; } // right
+		if(yPrecise_ + halfHeight > windowMaxY) { yPrecise_ -= deltaY; } // bottom
 	}
 }

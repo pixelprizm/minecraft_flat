@@ -21,18 +21,22 @@ class MainWindow : public QWidget
 	
 	public: // Member functions
 		explicit MainWindow();
+		void gameOver();
 
 	public slots:
 		void startNewGame();
 		void quitGame();
 		void pauseGame();
 	
-	private: // UI elements
+	public: // UI elements
 		QHBoxLayout* mainLayoutUI;
 			QVBoxLayout* leftLayoutUI;
 				QPushButton* startButtonUI;
 				QPushButton* quitButtonUI;
 				QPushButton* pauseButtonUI;
+				QHBoxLayout* livesLayoutUI;
+					QLabel* livesLabelUI;
+					QLabel* livesUI;
 				QLabel* userNameUI;
 				QLabel* scoreUI;
 			QLabel* statusLabelUI;

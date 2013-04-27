@@ -1,6 +1,8 @@
 #include "thing.h"
 #include "gamespace.h"
 
+
+
 /** Constructor.
 * @param parent Pointer to the GameSpace that holds this item.
 */

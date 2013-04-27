@@ -2,7 +2,6 @@
 #include "gamespace.h"
 
 #include <iostream>
-using namespace std;
 
 /** Constructor. Builds the game.
 */
@@ -22,7 +21,14 @@ MainWindow::MainWindow()
 			pauseButtonUI = new QPushButton("Pause", this);
 				connect(pauseButtonUI, SIGNAL(clicked()), this, SLOT(pauseGame()));
 			leftLayoutUI->addWidget(pauseButtonUI);
-			//healthUI = new QLabel(
+			livesLayoutUI = new QHBoxLayout;
+				livesLabelUI = new QLabel("Lives Left:", this);
+					livesLabelUI->setAlignment(Qt::AlignLeft);
+				livesLayoutUI->addWidget(livesLabelUI);
+				livesUI = new QLabel("", this);
+					livesUI->setAlignment(Qt::AlignRight);
+				livesLayoutUI->addWidget(livesUI);
+			leftLayoutUI->addLayout(livesLayoutUI);
 			userNameUI = new QLabel("", this);
 				userNameUI->setAlignment(Qt::AlignRight);
 			leftLayoutUI->addWidget(userNameUI);
@@ -44,6 +50,13 @@ MainWindow::MainWindow()
 		mainLayoutUI->addLayout(gameSpaceLayoutUI);
 		
 	this->setLayout(mainLayoutUI);
+}
+
+/** Called when the player dies
+*/
+void MainWindow::gameOver()
+{
+	std::cout << "Game Over!" << std::endl;
 }
 
 

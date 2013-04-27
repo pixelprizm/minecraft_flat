@@ -37,11 +37,14 @@ class GameSpace : public QGraphicsView
 		QGraphicsScene* scene() { return scene_; }
 		/** Get whether a game is currently in progress */
 		bool gameInProgress() { return gameInProgress_; }
+		/** Get a pointer to the parent */
+		MainWindow* parent() { return parent_; }
 	
 	public slots:
 		void handleTimer();
 	
 	private:
+		MainWindow* parent_;
 		QGraphicsScene* scene_;
 		QGraphicsPixmapItem* backgroundPicItem_;
 			QPixmap* backgroundPic_;
