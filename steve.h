@@ -16,6 +16,9 @@ class Steve : public Thing
 	private: // data members
 		int moveToX_;
 		int moveToY_;
+		double speedLimit_;
+		/** current health */
+		int health_;
 };
 
 #endif // STEVE_H

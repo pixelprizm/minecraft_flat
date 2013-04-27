@@ -44,7 +44,7 @@ class GameSpace : public QGraphicsView
 	private:
 		QGraphicsScene* scene_;
 		QGraphicsPixmapItem* backgroundPicItem_;
-		QPixmap* backgroundPic_;
+			QPixmap* backgroundPic_;
 		Steve* player_;
 			QPixmap* stevePic_;
 		std::vector<Thing*> enemies_;

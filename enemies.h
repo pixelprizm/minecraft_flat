@@ -12,6 +12,7 @@ class Zombie : public Thing
 		void updatePrecisePos(int windowMaxX, int windowMaxY);
 	
 	private: // data members
+		double speedLimit_;
 };
 
 /** Spider enemy

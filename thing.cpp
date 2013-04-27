@@ -10,7 +10,6 @@ Thing::Thing(QPixmap& picture, GameSpace* parent, Thing* player)
 {
 	parent_ = parent;
 	player_ = player;
-	health_ = 10;
 	xPrecise_ = x();
 	yPrecise_ = y();
 }

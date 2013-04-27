@@ -41,7 +41,7 @@ GameSpace::GameSpace(MainWindow* parent)
 	
 	// Initialize values used in controlling speed of the game
 	timerCount_ = 0;
-	period_ = 10;
+	period_ = 20;
 	periodCount_ = 0;
 	
 	// Set mouse flags
@@ -72,7 +72,6 @@ GameSpace::~GameSpace()
 
 
 
-
 // ============================================================================
 // ---------------------------------- MODIFIERS -------------------------------
 // ============================================================================
@@ -83,15 +82,16 @@ void GameSpace::startNewGame()
 {
 	timer_->stop();
 	
-	if(player_ == NULL)
-	{
-cout << "Making Steve" << endl;
-		player_ = new Steve(*stevePic_, this);
-		player_->setPos(400,300);
-cout << "Steve: " << player_->x() << " " << player_->y() << endl;
-		scene_->addItem(player_);
-	}
+	if(player_) delete player_; // get rid of old player so we create a new one, correctly initialized
 	
+	player_ = new Steve(*stevePic_, this);
+	player_->setPos(400,300);
+	//DEBUG
+		cout << "Steve: " << player_->x() << " " << player_->y() << endl;
+
+	scene_->addItem(player_);
+	
+	// If there was a previous game, get rid of the enemies (they remove themselves from the scene)
 	if(gameInProgress_)
 	{
 		while(!enemies_.empty())
@@ -123,11 +123,9 @@ void GameSpace::pauseGame(bool pause)
 */
 void GameSpace::mouseMoveEvent(QMouseEvent* event)//QGraphicsSceneMouseEvent* event)
 {
-cout << "mouse move " << event->pos().x() << " " << event->pos().y() << endl;
-	if((!timer_->isActive())) return;
+	if(!(timer_->isActive())) return;
 	
 	player_->moveTo(event->pos().x(), event->pos().y());
-cout << "player pos " << player_->x() << " " << player_->y() << endl;
 }
 
 
@@ -140,12 +138,13 @@ cout << "player pos " << player_->x() << " " << player_->y() << endl;
 */
 void GameSpace::handleTimer()
 {
-	//player_->move(); // keeps the player updating at the speed of the timer, not limited by the period_ value
+	player_->updatePrecisePos(WINDOW_MAX_X, WINDOW_MAX_Y); // these two lines keep the player updating at the speed of the timer, not limited by the period_ value
+	player_->move();
 	
 	if(timerCount_ % period_ == 0)
 	{
 		// Add a new enemy every specified number of periods
-		if(timerCount_ % 50 == 0)
+		if(timerCount_ % 100 == 0)
 		{
 			Thing* newEnemy;
 			int newWidth = 0, newHeight = 0;
@@ -176,8 +175,8 @@ void GameSpace::handleTimer()
 			// Initialize the enemy's position
 			newEnemy->setPos
 			(
-				rand()%(int)( (width()  - newWidth) *(.8) ) + (.1)*(width()  - newWidth ),
-				rand()%(int)( (height() - newHeight)*(.8) ) + (.1)*(height() - newHeight)
+				rand()%(width()  - newWidth  - 1),
+				rand()%(height() - newHeight - 1)
 			);
 			
 			// Add the enemy to the list of enemies and to the scene
@@ -186,14 +185,14 @@ void GameSpace::handleTimer()
 		}
 		
 		// Add a new item every specified number of periods
-		if(timerCount_ % 100 == 0)
+		if(timerCount_ % 376 == 0)
 		{
 			Thing* newItem = new Heart(*heartPic_, this, player_);
 			// Initialize the item's position
 			newItem->setPos
 			(
-				rand()%(int)( (width()  - heartPic_->width() )*(.8) ) + (.1)*(width()  - heartPic_->width() ),
-				rand()%(int)( (height() - heartPic_->height())*(.8) ) + (.1)*(height() - heartPic_->height())
+				rand()%(width()  - heartPic_->width()  - 1),
+				rand()%(height() - heartPic_->height() - 1)
 			);
 			items_.push_back(newItem);
 			scene_->addItem(newItem);
@@ -205,6 +204,8 @@ void GameSpace::handleTimer()
 			(*it)->updatePrecisePos(WINDOW_MAX_X, WINDOW_MAX_Y);
 			(*it)->move();
 		}
+		player_->updatePrecisePos(WINDOW_MAX_X, WINDOW_MAX_Y);
+		player_->move();
 		
 		// Every certain number of periods, speed up the enemies by decreasing the period
 		if(periodCount_ % 200 == 0)

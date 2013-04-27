@@ -4,6 +4,10 @@
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
 
+// For trig calculations and rand
+#include <cmath>
+const double PI = 3.14159265;
+
 class GameSpace; // so that we can use a pointer to the GameSpace for the parent
 
 /** This is an abstract base class for enemies, items, and the player.
@@ -24,8 +28,6 @@ class Thing : public QGraphicsPixmapItem
 	
 	protected:
 		// Data members
-			/** enemy's current health, unused for items */
-			int health_;
 			/** pointer to the GameSpace this thing is in */
 			GameSpace* parent_;
 			/** x position to move to when the timer updates (this is here so we can use movement at less than 1 pixel per timer without slowing timer) */
