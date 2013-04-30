@@ -56,7 +56,7 @@ class GameSpace : public QGraphicsView
 			QPixmap* creeperPic_;
 			QPixmap* skeletonPic_;
 			QPixmap* endermanPic_;
-		std::vector<Thing*> items_;
+		std::vector<Thing*> hearts_;
 			QPixmap* heartPic_;
 		bool gameInProgress_;
 		QTimer* timer_;

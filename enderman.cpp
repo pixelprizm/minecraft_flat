@@ -8,7 +8,7 @@ Enderman::Enderman(QPixmap& picture, GameSpace* parent, Thing* player)
 :
 	Thing(picture, parent, player)
 {
-	setOffset(-pixmap().width()/2, -pixmap().height()/2);
+	
 }
 
 /** 

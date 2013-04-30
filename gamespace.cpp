@@ -67,10 +67,10 @@ GameSpace::~GameSpace()
 			delete enemies_.back();
 			enemies_.pop_back();
 		}
-		while(!items_.empty())
+		while(!hearts_.empty())
 		{
-			delete items_.back();
-			items_.pop_back();
+			delete hearts_.back();
+			hearts_.pop_back();
 		}
 	}
 	delete player_;
@@ -106,10 +106,10 @@ void GameSpace::startNewGame()
 			delete enemies_.back();
 			enemies_.pop_back();
 		}
-		while(!items_.empty())
+		while(!hearts_.empty())
 		{
-			delete items_.back();
-			items_.pop_back();
+			delete hearts_.back();
+			hearts_.pop_back();
 		}
 	}
 	//initialize Steve's position and health etc.
@@ -151,57 +151,52 @@ void GameSpace::handleTimer()
 	if(timerCount_ % period_ == 0)
 	{
 		// Add a new enemy every specified number of periods
-		if(timerCount_ % 100 == 0)
+		if(periodCount_ % 100 == 0)
 		{
-			Thing* newEnemy;
-			int newWidth = 0, newHeight = 0;
+			Thing* newEnemy = NULL;
+			QPixmap* newEnemyPic = NULL;
 			switch(rand()%5)
 			{
 				case 0: newEnemy = new Zombie(*zombiePic_, this, player_);
-					newWidth = zombiePic_->width();
-					newHeight = zombiePic_->height();
+					newEnemyPic = zombiePic_;
 					break;
 				case 1: newEnemy = new Spider(*spiderPic_, this, player_);
-					newWidth = spiderPic_->width();
-					newHeight = spiderPic_->height();
+					newEnemyPic = spiderPic_;
 					break;
 				case 2: newEnemy = new Creeper(*creeperPic_, this, player_);
-					newWidth = creeperPic_->width();
-					newHeight = creeperPic_->height();
+					newEnemyPic = creeperPic_;
 					break;
 				case 3: newEnemy = new Skeleton(*skeletonPic_, this, player_);
-					newWidth = skeletonPic_->width();
-					newHeight = skeletonPic_->height();
+					newEnemyPic = skeletonPic_;
 					break;
 				case 4: newEnemy = new Enderman(*endermanPic_, this, player_);
-					newWidth = endermanPic_->width();
-					newHeight = endermanPic_->height();
+					newEnemyPic = endermanPic_;
 					break;
 			}
 			
 			// Initialize the enemy's position
 			newEnemy->setPos
 			(
-				rand()%(width()  - newWidth  - 1),
-				rand()%(height() - newHeight - 1)
-			);
+				rand()%(WINDOW_MAX_X - newEnemyPic->width() ) + (newEnemyPic->width()  / 2),
+				rand()%(WINDOW_MAX_Y - newEnemyPic->height()) + (newEnemyPic->height() / 2)
+			);//        ^rand range                              ^moves the enemy onto the view
 			
 			// Add the enemy to the list of enemies and to the scene
 			enemies_.push_back(newEnemy);
 			scene_->addItem(newEnemy);
 		}
 		
-		// Add a new item every specified number of periods
-		if(timerCount_ % 376 == 0)
+		// Add a new heart every specified number of periods
+		if(periodCount_ % 376 == 0)
 		{
 			Thing* newItem = new Heart(*heartPic_, this, player_);
 			// Initialize the item's position
 			newItem->setPos
 			(
-				rand()%(width()  - heartPic_->width()/2  - 1),
-				rand()%(height() - heartPic_->height()/2 - 1)
+				rand()%(WINDOW_MAX_X - heartPic_->width() ) + (heartPic_->width()  / 2),
+				rand()%(WINDOW_MAX_Y - heartPic_->height()) + (heartPic_->height() / 2)
 			);
-			items_.push_back(newItem);
+			hearts_.push_back(newItem);
 			scene_->addItem(newItem);
 		}
 		
@@ -213,13 +208,20 @@ void GameSpace::handleTimer()
 			
 			if(enemies_[i]->collidesWithItem(player_))
 			{
-				player_->takeDamage(1);
+				player_->changeHealth(-1);
 				delete enemies_[i];
 				enemies_.erase(enemies_.begin()+i);
 			}
 		}
-		player_->updatePrecisePos(WINDOW_MAX_X, WINDOW_MAX_Y);
-		player_->move();
+		for(unsigned int i = 0; i < hearts_.size(); i++)
+		{
+			if(hearts_[i]->collidesWithItem(player_))
+			{
+				player_->changeHealth(+1);
+				delete hearts_[i];
+				hearts_.erase(hearts_.begin()+i);
+			}
+		}
 		
 		// Every certain number of periods, speed up the enemies by decreasing the period
 		if(periodCount_ % 300 == 0)

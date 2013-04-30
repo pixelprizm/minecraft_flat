@@ -14,10 +14,11 @@ Steve::Steve(QPixmap& picture, GameSpace* parent)
 	moveToX_ = 400;
 	moveToY_ = 300;
 	speedLimit_ = .2;
-	setOffset(-pixmap().width()/2, -pixmap().height()/2);
 }
 
-/** 
+/** Called every clock pulse.  Player moves toward the cursor with a limited speed; player slows down when close to pointer.
+* @param windowMaxX Sets the maximum x-position of the player
+* @param windowMaxY Sets the maximum y-position of the player
 */
 void Steve::updatePrecisePos(int windowMaxX, int windowMaxY)
 {
@@ -47,9 +48,6 @@ void Steve::updatePrecisePos(int windowMaxX, int windowMaxY)
 	if(yPrecise_ - halfHeight < 0         ) { yPrecise_ = 0          + halfHeight; } // top
 	if(xPrecise_ + halfWidth  > windowMaxX) { xPrecise_ = windowMaxX - halfWidth;  } // right
 	if(yPrecise_ + halfHeight > windowMaxY) { yPrecise_ = windowMaxY - halfHeight; } // bottom
-	
-	// Check if colliding with anything
-	// if(!collidingItems().empty()) std::cout << "Collides." << std::endl;
 }
 
 /** Sets the Thing's target coordinates to move to.
@@ -58,9 +56,9 @@ void Steve::moveTo(double x, double y) { moveToX_ = x; moveToY_ = y; }
 
 /** Deals the passed-in amount of damage to the player
 */
-void Steve::takeDamage(int damage)
+void Steve::changeHealth(int delta)
 {
-	lives_ -= damage;
+	lives_ += delta;
 	parent()->parent()->livesUI->setText(QString::number(lives_));
 	if(lives_ < 0) parent()->parent()->gameOver();
 }

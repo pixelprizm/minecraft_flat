@@ -9,7 +9,6 @@ Zombie::Zombie(QPixmap& picture, GameSpace* parent, Thing* player)
 	Thing(picture, parent, player)
 {
 	speedLimit_ = .2;
-	setOffset(-pixmap().width()/2, -pixmap().height()/2);
 }
 
 /** Move the zombie toward the player. Same as Steve::updatePrecisePos() except it moves toward the player, not the cursor

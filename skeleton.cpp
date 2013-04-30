@@ -11,7 +11,6 @@ Skeleton::Skeleton(QPixmap& picture, GameSpace* parent, Thing* player)
 	speedLimit_ = 8;
 	angleChange_ = PI/2;
 	if(rand()%2) angleChange_ = -angleChange_;
-	setOffset(-pixmap().width()/2, -pixmap().height()/2);
 }
 
 /** 

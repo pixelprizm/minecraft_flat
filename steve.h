@@ -12,8 +12,8 @@ class Steve : public Thing
 		
 		// Modifiers
 		void updatePrecisePos(int windowMaxX, int windowMaxY);
-		void moveTo(double x, double Y);
-		void takeDamage(int damage);
+		void moveTo(double x, double y);
+		void changeHealth(int delta);
 		
 		// Accessors
 		/** Return the number of lives left */

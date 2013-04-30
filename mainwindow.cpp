@@ -22,11 +22,12 @@ MainWindow::MainWindow()
 				connect(pauseButtonUI, SIGNAL(clicked()), this, SLOT(pauseGame()));
 			leftLayoutUI->addWidget(pauseButtonUI);
 			livesLayoutUI = new QHBoxLayout;
-				livesLabelUI = new QLabel("Lives Left:", this);
+				livesLabelUI = new QLabel("Health:", this);
 					livesLabelUI->setAlignment(Qt::AlignLeft);
 				livesLayoutUI->addWidget(livesLabelUI);
 				livesUI = new QLabel("", this);
 					livesUI->setAlignment(Qt::AlignRight);
+					livesUI->setFixedWidth(100);
 				livesLayoutUI->addWidget(livesUI);
 			leftLayoutUI->addLayout(livesLayoutUI);
 			userNameUI = new QLabel("", this);

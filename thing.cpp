@@ -14,6 +14,7 @@ Thing::Thing(QPixmap& picture, GameSpace* parent, Thing* player)
 	player_ = player;
 	xPrecise_ = x();
 	yPrecise_ = y();
+	setOffset(-pixmap().width()/2, -pixmap().height()/2); // sets this thing's position to its center
 }
 
 /** Destructor for thing
@@ -23,7 +24,7 @@ Thing::~Thing()
 	parent_->scene()->removeItem(this);
 }
 
-/** overrides (and internally calls) QGraphicsPixmapItem::setPos() to enable this Thing's x_ and y_ members.
+/** overrides (and internally calls) QGraphicsPixmapItem::setPos() to keep track of this Thing's x_ and y_ members.
 */
 void Thing::setPos(double x, double y) { xPrecise_ = x; yPrecise_ = y; QGraphicsPixmapItem::setPos(x,y); }
 
