@@ -10,41 +10,47 @@ MainWindow::MainWindow()
 	// Layout and GUI items
 	mainLayoutUI = new QHBoxLayout;
 		// User Interface e.g. Buttons
-		leftLayoutUI = new QVBoxLayout;
+			leftLayoutUI = new QVBoxLayout;
 			leftLayoutUI->setAlignment(Qt::AlignTop);
-			startButtonUI = new QPushButton("New Game", this);
+				startButtonUI = new QPushButton("New Game", this);
 				connect(startButtonUI, SIGNAL(clicked()), this, SLOT(startNewGame()));
 			leftLayoutUI->addWidget(startButtonUI);
-			quitButtonUI = new QPushButton("Quit", this);
+				quitButtonUI = new QPushButton("Quit", this);
 				connect(quitButtonUI, SIGNAL(clicked()), this, SLOT(quitGame()));
 			leftLayoutUI->addWidget(quitButtonUI);
-			pauseButtonUI = new QPushButton("Pause", this);
+				pauseButtonUI = new QPushButton("Pause", this);
 				connect(pauseButtonUI, SIGNAL(clicked()), this, SLOT(pauseGame()));
 			leftLayoutUI->addWidget(pauseButtonUI);
-			livesLayoutUI = new QHBoxLayout;
-				livesLabelUI = new QLabel("Health:", this);
-					livesLabelUI->setAlignment(Qt::AlignLeft);
-				livesLayoutUI->addWidget(livesLabelUI);
-				livesUI = new QLabel("", this);
-					livesUI->setAlignment(Qt::AlignRight);
-					livesUI->setFixedWidth(100);
-				livesLayoutUI->addWidget(livesUI);
-			leftLayoutUI->addLayout(livesLayoutUI);
-			userNameUI = new QLabel("", this);
+			// Username
+				userNameUI = new QLabel("", this);
 				userNameUI->setAlignment(Qt::AlignRight);
 			leftLayoutUI->addWidget(userNameUI);
-			scoreUI = new QLabel("", this);
-				scoreUI->setAlignment(Qt::AlignLeft);
-			leftLayoutUI->addWidget(scoreUI);
-			statusLabelUI = new QLabel("", this);
-				statusLabelUI->setAlignment(Qt::AlignHCenter);
-			leftLayoutUI->addWidget(statusLabelUI);
+			// Health
+				healthLayoutUI = new QHBoxLayout;
+					healthLabelUI = new QLabel("", this);
+					healthLabelUI->setAlignment(Qt::AlignLeft);
+					healthLabelUI->setFixedWidth(80);
+				healthLayoutUI->addWidget(healthLabelUI);
+					healthUI = new QLabel("", this);
+					healthUI->setAlignment(Qt::AlignRight);
+					healthUI->setFixedWidth(80); // Makes it so that increasing numbers do not mess up the width
+				healthLayoutUI->addWidget(healthUI);
+			leftLayoutUI->addLayout(healthLayoutUI);
+			// Score
+				scoreLayoutUI = new QHBoxLayout;
+					scoreLabelUI = new QLabel("", this);
+					scoreLabelUI->setAlignment(Qt::AlignLeft);
+				scoreLayoutUI->addWidget(scoreLabelUI);
+					scoreUI = new QLabel("", this);
+					scoreUI->setAlignment(Qt::AlignRight);
+				scoreLayoutUI->addWidget(scoreUI);
+			leftLayoutUI->addLayout(scoreLayoutUI);
 		mainLayoutUI->addLayout(leftLayoutUI);
 		
 		// Gameplay Area
-		gameSpaceLayoutUI = new QVBoxLayout;
+			gameSpaceLayoutUI = new QVBoxLayout;
 			gameSpaceLayoutUI->setAlignment(Qt::AlignHCenter);
-			gameSpaceUI = new GameSpace(this);
+				gameSpaceUI = new GameSpace(this);
 				gameSpaceUI->setFixedWidth(WINDOW_MAX_X+2);
 				gameSpaceUI->setFixedHeight(WINDOW_MAX_Y+2);
 			gameSpaceLayoutUI->addWidget(gameSpaceUI);

@@ -34,11 +34,13 @@ class MainWindow : public QWidget
 				QPushButton* startButtonUI;
 				QPushButton* quitButtonUI;
 				QPushButton* pauseButtonUI;
-				QHBoxLayout* livesLayoutUI;
-					QLabel* livesLabelUI;
-					QLabel* livesUI;
+				QHBoxLayout* healthLayoutUI;
+					QLabel* healthLabelUI;
+					QLabel* healthUI;
 				QLabel* userNameUI;
-				QLabel* scoreUI;
+				QHBoxLayout* scoreLayoutUI;
+					QLabel* scoreLabelUI;
+					QLabel* scoreUI;
 			QLabel* statusLabelUI;
 			QVBoxLayout* gameSpaceLayoutUI;
 				GameSpace* gameSpaceUI;

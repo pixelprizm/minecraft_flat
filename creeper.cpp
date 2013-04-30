@@ -8,8 +8,9 @@ Creeper::Creeper(QPixmap& picture, GameSpace* parent, Thing* player)
 :
 	Thing(picture, parent, player)
 {
-	vX_ = ( (rand()%10)/20 + .3 ) * ( (-1)^(rand()%2) );
-	vY_ = ( (rand()%10)/20 + .3 ) * ( (-1)^(rand()%2) );
+	vX_ = ( (std::rand()%16)/8 + .15 ) * ( (std::rand()%2)*2-1 );
+	vY_ = ( (std::rand()%16)/8 + .15 ) * ( (std::rand()%2)*2-1 );
+	//      ^random value from .15 to 2.15   ^randomly switches to negative
 }
 
 /** 
@@ -20,7 +21,7 @@ void Creeper::updatePrecisePos(int windowMaxX, int windowMaxY)
 	xPrecise_ += vX_;
 	yPrecise_ += vY_;
 	
-	// Make sure creeper does not go offscreen
+	// Make sure creeper does not go offscreen; switch its direction if it does
 	int halfWidth = pixmap().width()/2;
 	int halfHeight = pixmap().height()/2;
 	if(xPrecise_ - halfWidth  < 0         ) { vX_ = -vX_; xPrecise_+=vX_; } // left

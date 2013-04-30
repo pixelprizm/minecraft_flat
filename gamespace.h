@@ -39,30 +39,53 @@ class GameSpace : public QGraphicsView
 		bool gameInProgress() { return gameInProgress_; }
 		/** Get a pointer to the parent */
 		MainWindow* parent() { return parent_; }
+		/* Get a reference to the current score */
+		int& score() { return score_; }
 	
 	public slots:
 		void handleTimer();
 	
 	private:
+		/* pointer to the parent MainWindow */
 		MainWindow* parent_;
+		/* the scene inside this view */
 		QGraphicsScene* scene_;
+		/* pointer to the graphics item for the background */
 		QGraphicsPixmapItem* backgroundPicItem_;
+			/* pointer to the picture used as the background */
 			QPixmap* backgroundPic_;
+		/* pointer to the player */
 		Steve* player_;
+			/* pointer to the picture for the player */
 			QPixmap* stevePic_;
+		/* vector full of the list of enemies */
 		std::vector<Thing*> enemies_;
+			/* pointer to the picture for zombies */
 			QPixmap* zombiePic_;
+			/* pointer to the picture for spiders */
 			QPixmap* spiderPic_;
+			/* pointer to the picture for creepers */
 			QPixmap* creeperPic_;
+			/* pointer to the picture for skeletons */
 			QPixmap* skeletonPic_;
+			/* pointer to the picture for endermen */
 			QPixmap* endermanPic_;
+		/* vector full of the list of hearts */
 		std::vector<Thing*> hearts_;
+			/* pointer to the picture for hearts */
 			QPixmap* heartPic_;
+		/* whether there is currently a game in progress (the only time this is false is when you first start the game */
 		bool gameInProgress_;
+		/* pointer to the timer data used for animation */
 		QTimer* timer_;
+		/* increments each timer pulse. */
 		int timerCount_;
+		/* number of timer pulses to wait before updating the enemies */
 		int period_;
+		/* increments each time a period passes */
 		int periodCount_;
+		/* increments */
+		int score_;
 };
 
 #endif // GAMESPACE_H

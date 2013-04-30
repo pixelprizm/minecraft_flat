@@ -17,7 +17,7 @@ void Enderman::updatePrecisePos(int windowMaxX, int windowMaxY)
 {
 	if(std::rand()%100 == 0)
 	{
-		double r = std::rand() % 90 + 5;
+		double r = std::rand() % 90 + 20;
 		double th = (((double)(std::rand()%64))/64)*(2*PI);
 		double deltaX = r * std::cos(th);
 		double deltaY = r * std::sin(th);

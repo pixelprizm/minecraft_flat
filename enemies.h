@@ -28,6 +28,9 @@ class Spider : public Thing
 		void updatePrecisePos(int windowMaxX, int windowMaxY);
 	
 	private: // data members
+		double vX_;
+		double vY_;
+		void randomizeVel();
 };
 
 

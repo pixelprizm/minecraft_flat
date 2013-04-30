@@ -9,7 +9,7 @@ Skeleton::Skeleton(QPixmap& picture, GameSpace* parent, Thing* player)
 	Thing(picture, parent, player)
 {
 	speedLimit_ = 8;
-	angleChange_ = PI/2;
+	angleChange_ = PI/2 + PI/120;
 	if(rand()%2) angleChange_ = -angleChange_;
 }
 

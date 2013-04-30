@@ -53,6 +53,9 @@ GameSpace::GameSpace(MainWindow* parent)
 	// Set mouse flags
 	setMouseTracking(true);
 	setFocus();
+	
+	// Initialize score
+	score_ = 0;
 }
 
 /** Destructor. Deletes all Things. They remove themselves from the scene.
@@ -96,7 +99,8 @@ void GameSpace::startNewGame()
 	scene_->addItem(player_);
 	
 	// Initialize label that displays number of lives
-	parent()->livesUI->setText(QString::number(player_->lives()));
+	parent()->healthLabelUI->setText("Health:");
+	parent()->healthUI->setText(QString::number(player_->lives()));
 	
 	// If there was a previous game, get rid of the enemies (they remove themselves from the scene)
 	if(gameInProgress_)
@@ -112,7 +116,20 @@ void GameSpace::startNewGame()
 			hearts_.pop_back();
 		}
 	}
-	//initialize Steve's position and health etc.
+	
+	
+	
+	// Initialize values used in controlling speed of the game
+	timerCount_ = 0;
+	period_ = 30;
+	periodCount_ = 1; // it's 1 so that enemies don't spawn instantly
+	
+	// Initialize score
+	parent()->scoreLabelUI->setText("Score:");
+	score_ = 0;
+	parent()->scoreUI->setText(QString::number(score_));
+	
+	// Start the game!
 	gameInProgress_ = true;
 	timer_->start();
 }
@@ -155,7 +172,7 @@ void GameSpace::handleTimer()
 		{
 			Thing* newEnemy = NULL;
 			QPixmap* newEnemyPic = NULL;
-			switch(rand()%5)
+			switch(4)//rand()%5)
 			{
 				case 0: newEnemy = new Zombie(*zombiePic_, this, player_);
 					newEnemyPic = zombiePic_;
@@ -200,7 +217,7 @@ void GameSpace::handleTimer()
 			scene_->addItem(newItem);
 		}
 		
-		// Update each Thing
+		// Update each enemy & check for collisions
 		for(unsigned int i = 0; i < enemies_.size(); i++)
 		{
 			enemies_[i]->updatePrecisePos(WINDOW_MAX_X, WINDOW_MAX_Y);
@@ -213,6 +230,7 @@ void GameSpace::handleTimer()
 				enemies_.erase(enemies_.begin()+i);
 			}
 		}
+		// Check for collisions between hearts and the player
 		for(unsigned int i = 0; i < hearts_.size(); i++)
 		{
 			if(hearts_[i]->collidesWithItem(player_))
@@ -226,9 +244,16 @@ void GameSpace::handleTimer()
 		// Every certain number of periods, speed up the enemies by decreasing the period
 		if(periodCount_ % 300 == 0)
 		{
-			if(period_ > 2) period_--;
+			if(period_ > 8) period_--;
 		}
 		periodCount_++;
+		
+		// Update score
+		if(periodCount_ % 4 == 0)
+		{
+			score_++;
+			parent()->scoreUI->setText(QString::number(score_));
+		}
 	}
 	timerCount_++;
 }
