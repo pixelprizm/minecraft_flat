@@ -3,7 +3,7 @@
 
 #include <QInputDialog>
 
-/** Constructor. Builds the game.
+/** Constructor. Builds the game's main window UI.
 */
 MainWindow::MainWindow()
 {
@@ -68,7 +68,7 @@ MainWindow::MainWindow()
 	this->setLayout(mainLayoutUI);
 }
 
-/** Called when the player dies. Prompts the user to start a new game or 
+/** Called when the player dies. Prompts the user to start a new game or quit.
 */
 void MainWindow::gameOver()
 {
@@ -78,17 +78,18 @@ void MainWindow::gameOver()
 	gameOverPrompt.setWindowTitle("Game Over!");
 	QString* deathText = new QString("Score: ");
 	*deathText += QString::number(gameSpaceUI->score());
-	//eventually, save the score here.
+	//eventually, save the score to a file here.
 	gameOverPrompt.setText(*deathText);
 	gameOverPrompt.setInformativeText("Do want to start new game?");
 	gameOverPrompt.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+	gameOverPrompt.setDefaultButton(QMessageBox::Yes);
 	int choice = gameOverPrompt.exec();
 	if(choice==QMessageBox::No) {qApp->quit(); return;}
 	
 	enterUsername();
 }
 
-/** Prompts the user to enter a username.
+/** Prompts the user to enter a username. On repeated games, starts out with the last entered username by default.
 */
 void MainWindow::enterUsername()
 {
@@ -106,7 +107,7 @@ void MainWindow::enterUsername()
 // ------------------------------- SLOTS -------------------------------------
 // ===========================================================================
 
-/** Start a new game
+/** Start a new game. Prompts the user first if a game is in progress.
 */
 void MainWindow::startNewGame()
 {
@@ -127,7 +128,7 @@ void MainWindow::startNewGame()
 	enterUsername();
 }
 
-/** Prompt the user to quit
+/** Prompt the user to quit the game.
 */
 void MainWindow::quitGame()
 {
@@ -147,7 +148,7 @@ void MainWindow::quitGame()
 	qApp->quit();
 }
 
-/** Pauses and presents a pop-up to the user to resume
+/** Pauses and presents a pop-up until the user resumes
 */
 void MainWindow::pauseGame()
 {

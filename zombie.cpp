@@ -2,16 +2,21 @@
 
 
 
-/** 
+/** Constructor. Calls Thing constructor and sets max speed.
+* @param picture The picture for this to display
+* @param parent Pointer to the GameSpace that holds this item.
+* @param player Pointer to the player item, used by some enemies for motion
 */
 Zombie::Zombie(QPixmap& picture, GameSpace* parent, Thing* player)
 :
 	Thing(picture, parent, player)
 {
-	speedLimit_ = .6;
+	speed_ = .6;
 }
 
-/** Move the zombie toward the player. Same as Steve::updatePrecisePos() except it moves toward the player, not the cursor
+/** Update zombie's position. The zombie moves toward the player. Same as Steve::updatePrecisePos() except it moves toward the player, not the cursor
+* @param windowMaxX the width of the area valid for motion
+* @param windowMaxY the height of the area valid for motion
 */
 void Zombie::updatePrecisePos(int windowMaxX, int windowMaxY)
 {
@@ -26,8 +31,8 @@ void Zombie::updatePrecisePos(int windowMaxX, int windowMaxY)
 	if(deltaX < 0) th += PI;
 	
 	// Move the zombie toward the player at the speedlimit
-	xPrecise_ += speedLimit_ * std::cos(th);
-	yPrecise_ += speedLimit_ * std::sin(th);
+	xPrecise_ += speed_ * std::cos(th);
+	yPrecise_ += speed_ * std::sin(th);
 	
 	// Make sure zombie does not go offscreen
 	int halfWidth = pixmap().width()/2;

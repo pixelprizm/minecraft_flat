@@ -14,7 +14,8 @@ class Zombie : public Thing
 		void updatePrecisePos(int windowMaxX, int windowMaxY);
 	
 	private: // data members
-		double speedLimit_;
+		/** Speed at which the zombie travels */
+		double speed_;
 };
 
 
@@ -27,10 +28,14 @@ class Spider : public Thing
 		Spider(QPixmap& picture, GameSpace* parent, Thing* player);
 		void updatePrecisePos(int windowMaxX, int windowMaxY);
 	
-	private: // data members
-		double vX_;
-		double vY_;
+	private: // helper functions
 		void randomizeVel();
+	
+	private: // data members
+		/** x-velocity */
+		double vX_;
+		/** y-velocity */
+		double vY_;
 };
 
 
@@ -44,7 +49,9 @@ class Creeper : public Thing
 		void updatePrecisePos(int windowMaxX, int windowMaxY);
 	
 	private: // data members
+		/** x-velocity */
 		double vX_;
+		/** y-velocity */
 		double vY_;
 };
 
@@ -59,7 +66,9 @@ class Skeleton : public Thing
 		void updatePrecisePos(int windowMaxX, int windowMaxY);
 	
 	private: // data members
+		/** The skeleton's maximum speed */
 		double speedLimit_;
+		/** The angle to add to the skeleton's direction. Used to make the skeleton circle the player. */
 		double angleChange_;
 };
 
@@ -72,8 +81,6 @@ class Enderman : public Thing
 	public: // member functions
 		Enderman(QPixmap& picture, GameSpace* parent, Thing* player);
 		void updatePrecisePos(int windowMaxX, int windowMaxY);
-	
-	private: // data members
 };
 
 

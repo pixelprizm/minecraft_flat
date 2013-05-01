@@ -3,7 +3,7 @@
 
 #include "thing.h"
 
-/** Main character class
+/** Main character class.
 */
 class Steve : public Thing
 {
@@ -16,15 +16,20 @@ class Steve : public Thing
 		void changeHealth(int delta);
 		
 		// Accessors
-		/** Return the number of lives left */
-		int lives() { return lives_; }
+		/** Health accessor
+		*	@return Number of lives left
+		*/
+		int health() { return health_; }
 	
 	private: // data members
+		/** the x-position for the player to move to, i.e., the position of the mouse cursor */
 		int moveToX_;
+		/** the y-position for the player to move to, i.e., the position of the mouse cursor */
 		int moveToY_;
+		/** maximum speed at which the player can travel in any direction */
 		double speedLimit_;
 		/** current number of lives */
-		int lives_;
+		int health_;
 };
 
 #endif // STEVE_H

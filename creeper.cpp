@@ -2,7 +2,10 @@
 
 
 
-/** 
+/** Constructor. Calls Thing constructor and initializes velocity to a random speed and direction.
+* @param picture The picture for this to display
+* @param parent Pointer to the GameSpace that holds this item.
+* @param player Pointer to the player item
 */
 Creeper::Creeper(QPixmap& picture, GameSpace* parent, Thing* player)
 :
@@ -14,7 +17,9 @@ Creeper::Creeper(QPixmap& picture, GameSpace* parent, Thing* player)
 	vY_ = speed * std::sin(theta);
 }
 
-/** 
+/** Moves the creeper. Creepers move continuously in a direction, bouncing off of the gameSpace's walls
+* @param windowMaxX the width of the area valid for motion
+* @param windowMaxY the height of the area valid for motion
 */
 void Creeper::updatePrecisePos(int windowMaxX, int windowMaxY)
 {

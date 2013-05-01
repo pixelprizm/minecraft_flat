@@ -4,15 +4,17 @@
 
 
 
-/** 
+/** Constructor. Calls Thing constructor, and initializes values for motion
+* @param picture The picture for this to display
+* @param parent Pointer to the GameSpace that holds this item.
 */
 Steve::Steve(QPixmap& picture, GameSpace* parent)
 :
-	Thing(picture, parent, NULL)
+	Thing(picture, parent, NULL) // pass NULL as the player pointer to Thing because this is the player
 {
-	lives_ = 10;
-	moveToX_ = 400;
-	moveToY_ = 300;
+	health_ = 10;
+	moveToX_ = 0;
+	moveToY_ = 0;
 	speedLimit_ = .2;
 }
 
@@ -50,15 +52,19 @@ void Steve::updatePrecisePos(int windowMaxX, int windowMaxY)
 	if(yPrecise_ + halfHeight > windowMaxY) { yPrecise_ = windowMaxY - halfHeight; } // bottom
 }
 
-/** Sets the Thing's target coordinates to move to.
+/** Sets the player's target coordinates to move to (player does not move instantly to this position)
+* @param x The x-position for the player to move to
+* @param y The y-position for the player to move to
 */
-void Steve::moveTo(double x, double y) { moveToX_ = x; moveToY_ = y; }
+void Steve::moveTo(double x, double y)
+{ moveToX_ = x; moveToY_ = y; }
 
-/** Deals the passed-in amount of damage to the player
+/** Changes the player's health by the passed-in amount
+* @param delta The change in the player's health to be applied
 */
 void Steve::changeHealth(int delta)
 {
-	lives_ += delta;
-	parent()->parent()->healthUI->setNum(lives_);
-	if(lives_ <= 0) parent()->parent()->gameOver();
+	health_ += delta;
+	parent()->parent()->healthUI->setNum(health_);
+	if(health_ <= 0) parent()->parent()->gameOver();
 }

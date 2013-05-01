@@ -30,20 +30,33 @@ class MainWindow : public QWidget
 		void pauseGame();
 	
 	public: // UI elements
+		/** Pointer to entire window's layout */
 		QHBoxLayout* mainLayoutUI;
+			/** Pointer to vertical layout to the left of the gameplay area */
 			QVBoxLayout* leftLayoutUI;
+				/** Pointer to start button */
 				QPushButton* startButtonUI;
+				/** Pointer to quit button */
 				QPushButton* quitButtonUI;
+				/** Pointer to pause button */
 				QPushButton* pauseButtonUI;
-				QHBoxLayout* healthLayoutUI;
-					QLabel* healthLabelUI;
-					QLabel* healthUI;
+				/** Pointer to username label */
 				QLabel* usernameUI;
+				/** Pointer to layout for health label and health value */
+				QHBoxLayout* healthLayoutUI;
+					/** Pointer to health label */
+					QLabel* healthLabelUI;
+					/** Pointer to health value */
+					QLabel* healthUI;
+				/** Pointer to layout for score label and score value */
 				QHBoxLayout* scoreLayoutUI;
+					/** Pointer to score label */
 					QLabel* scoreLabelUI;
+					/** Pointer to score value */
 					QLabel* scoreUI;
-			QLabel* statusLabelUI;
+			/** Pointer to layout for game area (used to center the game area within its layout area) */
 			QVBoxLayout* gameSpaceLayoutUI;
+				/** Pointer to gameplay area of the window */
 				GameSpace* gameSpaceUI;
 };
 

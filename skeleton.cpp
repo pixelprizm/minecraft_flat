@@ -2,18 +2,23 @@
 
 
 
-/** 
+/** Constructor. Calls Thing constructor and sets speed limit, angle change, and angle change's initial direction.
+* @param picture The picture for this to display
+* @param parent Pointer to the GameSpace that holds this item.
+* @param player Pointer to the player item, used for motion
 */
 Skeleton::Skeleton(QPixmap& picture, GameSpace* parent, Thing* player)
 :
 	Thing(picture, parent, player)
 {
 	speedLimit_ = 8;
-	angleChange_ = PI/2 + PI/120;
+	angleChange_ = PI/2 + PI/180;
 	if(rand()%2) angleChange_ = -angleChange_;
 }
 
-/** 
+/** Moves skeleton. Skeletons circle the player, moving very slightly away.
+* @param windowMaxX the width of the area valid for motion
+* @param windowMaxY the height of the area valid for motion
 */
 void Skeleton::updatePrecisePos(int windowMaxX, int windowMaxY)
 {

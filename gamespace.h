@@ -19,6 +19,8 @@
 
 class MainWindow;
 
+/** Class for the game's gameplay.
+*/
 class GameSpace : public QGraphicsView
 {
 	Q_OBJECT

@@ -2,18 +2,21 @@
 
 
 
-/** 
+/** Constructor. Calls Thing constructor.
+* @param picture The picture for this to display
+* @param parent Pointer to the GameSpace that holds this item.
+* @param player Pointer to the player item
 */
 Heart::Heart(QPixmap& picture, GameSpace* parent, Thing* player)
 :
 	Thing(picture, parent, player)
 {
-	setOffset(-pixmap().width()/2, -pixmap().height()/2); // sets this thing's position to its center
+	
 }
 
-/** 
+/** Empty function for updatePrecise Pos, because Heart does not move. Parameters are not used.
 */
-void Heart::updatePrecisePos(int windowMaxX, int windowMaxY)
+void Heart::updatePrecisePos(int, int)
 {
 	
 }

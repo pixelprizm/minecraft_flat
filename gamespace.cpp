@@ -5,7 +5,8 @@
 
 
 
-/** Constructor. Loads pictures and builds the game area.
+/** Constructor. Loads pictures, builds the game area, and initializes flag values
+* @param parent Pointer to the parent MainWindow. This is passed to QGraphicsView
 */
 GameSpace::GameSpace(MainWindow* parent)
 :
@@ -56,7 +57,7 @@ GameSpace::GameSpace(MainWindow* parent)
 	gameOverFlag_ = false;
 }
 
-/** Destructor. Deletes all Things. They remove themselves from the scene.
+/** Destructor. Deletes all enemies, items, and the player. They remove themselves from the scene.
 */
 GameSpace::~GameSpace()
 {
@@ -83,7 +84,7 @@ GameSpace::~GameSpace()
 // ---------------------------------- MODIFIERS -------------------------------
 // ============================================================================
 
-/** Start a new game
+/** Start a new game. First deletes old data, then creates and initializes new data
 */
 void GameSpace::startNewGame()
 {
@@ -93,12 +94,13 @@ void GameSpace::startNewGame()
 	
 	// Initialize player values
 	player_ = new Steve(*stevePic_, this);
-	player_->setPos(400,300);
+	player_->setPos(WINDOW_MAX_X/2,WINDOW_MAX_Y/2);
+	player_->moveTo(WINDOW_MAX_X/2,WINDOW_MAX_Y/2); // so that the player does not move to a random location on game start
 	scene_->addItem(player_);
 	
-	// Initialize label that displays number of lives
+	// Initialize label that displays remaining health
 	parent()->healthLabelUI->setText("Health:");
-	parent()->healthUI->setText(QString::number(player_->lives()));
+	parent()->healthUI->setText(QString::number(player_->health()));
 	
 	// If there was a previous game, get rid of the enemies (they remove themselves from the scene)
 	if(gameInProgress_)
@@ -135,7 +137,7 @@ void GameSpace::startNewGame()
 }
 
 /** Freeze or resume gameplay.
-*	@param pause If true, pause the game; if false, resume the game
+* @param pause If true, pause the game; if false, resume the game
 */
 void GameSpace::pauseGame(bool pause)
 {
@@ -145,10 +147,10 @@ void GameSpace::pauseGame(bool pause)
 
 
 
-/** Called when the mouse is moved. Updates Steve's location.
-* @param event Data for the mouse event
+/** Called when the mouse is moved. Updates Steve's target location.
+* @param event Data for the mouse event (used for location)
 */
-void GameSpace::mouseMoveEvent(QMouseEvent* event)//QGraphicsSceneMouseEvent* event)
+void GameSpace::mouseMoveEvent(QMouseEvent* event)
 {
 	if(!(timer_->isActive())) return;
 	
@@ -161,7 +163,7 @@ void GameSpace::mouseMoveEvent(QMouseEvent* event)//QGraphicsSceneMouseEvent* ev
 // ---------------------------------- SLOTS -----------------------------------
 // ============================================================================
 
-/** Called whenever the timer goes off. Handles animation and triggers move functions
+/** Called whenever the timer goes off. Handles animation and triggers Things' functions for motion
 */
 void GameSpace::handleTimer()
 {

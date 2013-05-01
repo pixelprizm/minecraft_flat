@@ -2,7 +2,10 @@
 
 
 
-/** Constructor for spider
+/** Constructor. Calls Thing constructor and initially randomizes the velocity.
+* @param picture The picture for this to display
+* @param parent Pointer to the GameSpace that holds this item.
+* @param player Pointer to the player item
 */
 Spider::Spider(QPixmap& picture, GameSpace* parent, Thing* player)
 :
@@ -11,17 +14,19 @@ Spider::Spider(QPixmap& picture, GameSpace* parent, Thing* player)
 	randomizeVel();
 }
 
-/** Reset the velocity of the spider to a random value
+/** Reset the velocity of the spider to a random speed and direction
 */
 void Spider::randomizeVel()
 {
-	double speed = (std::rand()%16)/8 + 1; // random speed from 1 to 3
+	double speed = (double)((std::rand()%24))/8; // random speed from 0 to 3
 	double theta = (((double)(std::rand()%64))/64)*(2*PI); // random angle
 	vX_ = speed * std::cos(theta);
 	vY_ = speed * std::sin(theta);
 }
 
-/** Update the position for spiders. Spiders move very slowly and will sometimes change directions
+/** Update the position for spiders. Spiders move and will sometimes change directions
+* @param windowMaxX the width of the area valid for motion
+* @param windowMaxY the height of the area valid for motion
 */
 void Spider::updatePrecisePos(int windowMaxX, int windowMaxY)
 {

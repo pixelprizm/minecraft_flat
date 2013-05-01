@@ -4,9 +4,6 @@
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
 
-//DEBUG
-#include <iostream>
-
 // For trig calculations and rand
 #include <cmath>
 const double PI = 3.14159265;
@@ -28,14 +25,16 @@ class Thing : public QGraphicsPixmapItem
 		void move();
 		
 		// Accessors
-		/** Return a pointer to this Thing's parent GameSpace */
+		/** Return a pointer to this Thing's parent GameSpace
+		* @return Pointer to the aprent GameSpace
+		*/
 		GameSpace* parent() { return parent_; }
 	
 	protected:
 		// Data members
 			/** pointer to the GameSpace this thing is in */
 			GameSpace* parent_;
-			/** x position to move to when the timer updates (this is here so we can use movement at less than 1 pixel per timer without slowing timer) */
+			/** x position to move to when the timer updates (these are here so we can use movement at less than 1 pixel per timer without slowing timer) */
 			double xPrecise_;
 			/** y position to move to when the timer updates */
 			double yPrecise_;
