@@ -41,6 +41,8 @@ class GameSpace : public QGraphicsView
 		MainWindow* parent() { return parent_; }
 		/* Get a reference to the current score */
 		int& score() { return score_; }
+		/* Get a reference to the game-over-flag */
+		bool& gameOverFlag() { return gameOverFlag_; }
 	
 	public slots:
 		void handleTimer();
@@ -84,8 +86,10 @@ class GameSpace : public QGraphicsView
 		int period_;
 		/* increments each time a period passes */
 		int periodCount_;
-		/* increments */
+		/* increments once for every certain number of periods */
 		int score_;
+		/* indicates whether or not to increment the score */
+		bool gameOverFlag_;
 };
 
 #endif // GAMESPACE_H

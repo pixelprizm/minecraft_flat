@@ -54,8 +54,9 @@ GameSpace::GameSpace(MainWindow* parent)
 	setMouseTracking(true);
 	setFocus();
 	
-	// Initialize score
+	// Initialize score & game over flag
 	score_ = 0;
+	gameOverFlag_ = false;
 }
 
 /** Destructor. Deletes all Things. They remove themselves from the scene.
@@ -91,7 +92,7 @@ void GameSpace::startNewGame()
 {
 	timer_->stop();
 	
-	if(player_) delete player_; // get rid of old player so we create a new one, correctly initialized
+	if(player_) {delete player_;} // get rid of old player so we create a new one, correctly initialized
 	
 	// Initialize player values
 	player_ = new Steve(*stevePic_, this);
@@ -105,6 +106,8 @@ void GameSpace::startNewGame()
 	// If there was a previous game, get rid of the enemies (they remove themselves from the scene)
 	if(gameInProgress_)
 	{
+		//DEBUG
+			std::cout << "size: " << enemies_.size() + hearts_.size() << std::endl;
 		while(!enemies_.empty())
 		{
 			delete enemies_.back();
@@ -115,6 +118,8 @@ void GameSpace::startNewGame()
 			delete hearts_.back();
 			hearts_.pop_back();
 		}
+		//DEBUG
+			std::cout << "size: " << enemies_.size() + hearts_.size() << std::endl;
 	}
 	
 	
@@ -128,10 +133,17 @@ void GameSpace::startNewGame()
 	parent()->scoreLabelUI->setText("Score:");
 	score_ = 0;
 	parent()->scoreUI->setText(QString::number(score_));
+	gameOverFlag_ = false;
 	
 	// Start the game!
-	gameInProgress_ = true;
+	gameOverFlag_ = false;
 	timer_->start();
+	gameInProgress_ = true;
+	
+	
+	
+	//DEBUG
+		std::cout << "blegh" << std::endl;
 }
 
 void GameSpace::pauseGame(bool pause)
@@ -162,17 +174,21 @@ void GameSpace::mouseMoveEvent(QMouseEvent* event)//QGraphicsSceneMouseEvent* ev
 */
 void GameSpace::handleTimer()
 {
+	//DEBUG
+		std::cout << "agh" << std::endl;
 	player_->updatePrecisePos(WINDOW_MAX_X, WINDOW_MAX_Y); // these two lines keep the player updating at the speed of the timer, not limited by the period_ value
 	player_->move();
+	//DEBUG
+		std::cout << "after" << std::endl;
 	
 	if(timerCount_ % period_ == 0)
 	{
 		// Add a new enemy every specified number of periods
-		if(periodCount_ % 100 == 0)
+		if(periodCount_ % 83 == 0)
 		{
 			Thing* newEnemy = NULL;
 			QPixmap* newEnemyPic = NULL;
-			switch(4)//rand()%5)
+			switch(rand()%5)
 			{
 				case 0: newEnemy = new Zombie(*zombiePic_, this, player_);
 					newEnemyPic = zombiePic_;
@@ -225,9 +241,10 @@ void GameSpace::handleTimer()
 			
 			if(enemies_[i]->collidesWithItem(player_))
 			{
-				player_->changeHealth(-1);
 				delete enemies_[i];
 				enemies_.erase(enemies_.begin()+i);
+				player_->changeHealth(-1);
+				if(gameOverFlag_) return;
 			}
 		}
 		// Check for collisions between hearts and the player
@@ -235,9 +252,10 @@ void GameSpace::handleTimer()
 		{
 			if(hearts_[i]->collidesWithItem(player_))
 			{
-				player_->changeHealth(+1);
 				delete hearts_[i];
 				hearts_.erase(hearts_.begin()+i);
+				player_->changeHealth(+1);
+				score_+=100;
 			}
 		}
 		
@@ -245,11 +263,13 @@ void GameSpace::handleTimer()
 		if(periodCount_ % 300 == 0)
 		{
 			if(period_ > 8) period_--;
+			//DEBUG
+			//	player_->changeHealth(-10);
 		}
 		periodCount_++;
 		
 		// Update score
-		if(periodCount_ % 4 == 0)
+		if(periodCount_ % 4 == 0 && !gameOverFlag_)
 		{
 			score_++;
 			parent()->scoreUI->setText(QString::number(score_));

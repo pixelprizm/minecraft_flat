@@ -27,7 +27,7 @@ void Steve::updatePrecisePos(int windowMaxX, int windowMaxY)
 	       deltaY = (moveToY_ - y());
 	
 	// Set the radius to move
-	double r = std::sqrt(std::abs(deltaX*deltaX + deltaY*deltaY))/160;
+	double r = std::sqrt(deltaX*deltaX + deltaY*deltaY)/160;
 	
 	// Set the angle theta at which the player will move for this frame
 	double th;
@@ -59,6 +59,6 @@ void Steve::moveTo(double x, double y) { moveToX_ = x; moveToY_ = y; }
 void Steve::changeHealth(int delta)
 {
 	lives_ += delta;
-	parent()->parent()->livesUI->setText(QString::number(lives_));
-	if(lives_ < 0) parent()->parent()->gameOver();
+	parent()->parent()->healthUI->setText(QString::number(lives_));
+	if(lives_ <= 0) parent()->parent()->gameOver();
 }

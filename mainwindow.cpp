@@ -7,6 +7,8 @@
 */
 MainWindow::MainWindow()
 {
+	this->setWindowTitle("Minecraft Flat Survival!");
+	
 	// Layout and GUI items
 	mainLayoutUI = new QHBoxLayout;
 		// User Interface e.g. Buttons
@@ -63,7 +65,21 @@ MainWindow::MainWindow()
 */
 void MainWindow::gameOver()
 {
+	gameSpaceUI->pauseGame(true);
 	std::cout << "Game Over!" << std::endl;
+	gameSpaceUI->gameOverFlag() = true;
+	QMessageBox gameOverPrompt;
+	gameOverPrompt.setWindowTitle("Game Over!");
+	QString* deathText = new QString("Score: ");
+	*deathText += QString::number(gameSpaceUI->score());
+	//eventually, save the score here.
+	gameOverPrompt.setText(*deathText);
+	gameOverPrompt.setInformativeText("Do want to start new game?");
+	gameOverPrompt.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+	int choice = gameOverPrompt.exec();
+	if(choice==QMessageBox::No) {qApp->quit();}
+	
+	gameSpaceUI->startNewGame();
 }
 
 
@@ -76,7 +92,7 @@ void MainWindow::gameOver()
 */
 void MainWindow::startNewGame()
 {
-	// Check if a game is in progress
+	// Check & prompt the user if a game is in progress
 	if(gameSpaceUI->gameInProgress())
 	{
 		gameSpaceUI->pauseGame(true);
@@ -89,6 +105,8 @@ void MainWindow::startNewGame()
 		int choice = newGamePrompt.exec();
 		if(choice==QMessageBox::No) {gameSpaceUI->pauseGame(false); return;}
 	}
+	//Add prompt for username
+	
 	gameSpaceUI->startNewGame();
 }
 

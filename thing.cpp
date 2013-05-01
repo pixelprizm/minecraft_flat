@@ -17,7 +17,7 @@ Thing::Thing(QPixmap& picture, GameSpace* parent, Thing* player)
 	setOffset(-pixmap().width()/2, -pixmap().height()/2); // sets this thing's position to its center
 }
 
-/** Destructor for thing
+/** Destructor for thing. Removes the Thing from the scene
 */
 Thing::~Thing()
 {
