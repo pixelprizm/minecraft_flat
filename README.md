@@ -1,11 +1,11 @@
 # Game - Programming Assignments Private Repository
 ### Student Information
-  + Name: Tommy Trojan
-  + USC Email: ttrojan@usc.edu
-  + USC ID: 0123456789
+  + Name: Eric Gauderman
+  + USC Email: gauderma@usc.edu
+  + USC ID: 2865 5123 61
 
 ### Game Information
-  + Game Name: myAwsomeGame
+  + Game Name: Minecraft Flat!
   + Game Description: One sentence game description
   + [Game Design Doc](GameDesignDoc.md)
 
@@ -14,12 +14,13 @@
 The grader should use the following procedure to compile and run the code:
 ```shell
 #Compile Instructions
-echo "Write command here"
+qmake -project
+qmake
+make
 #Doxygen Instructions
-echo "Write command here"
+doxygen -g config.txt
+doxygen config.txt
+firefox html/index.html
 #Command to run
-echo "Write command here"
+./game_gauderma #or ./directory_name
 ```
-
-### Screenshots -- [Optional]
-You can either remove this section or add screenshots if you wish.
