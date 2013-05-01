@@ -8,9 +8,10 @@ Creeper::Creeper(QPixmap& picture, GameSpace* parent, Thing* player)
 :
 	Thing(picture, parent, player)
 {
-	vX_ = ( (std::rand()%16)/8 + .15 ) * ( (std::rand()%2)*2-1 );
-	vY_ = ( (std::rand()%16)/8 + .15 ) * ( (std::rand()%2)*2-1 );
-	//      ^random value from .15 to 2.15   ^randomly switches to negative
+	double speed = (std::rand()%16)/8 + .25; // random speed from .25 to 2.25
+	double theta = (((double)(std::rand()%64))/64)*(2*PI); // random angle
+	vX_ = speed * std::cos(theta);
+	vY_ = speed * std::sin(theta);
 }
 
 /** 
