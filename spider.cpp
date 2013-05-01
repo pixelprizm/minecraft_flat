@@ -19,12 +19,6 @@ void Spider::randomizeVel()
 	double theta = (((double)(std::rand()%64))/64)*(2*PI); // random angle
 	vX_ = speed * std::cos(theta);
 	vY_ = speed * std::sin(theta);
-	
-	
-	
-	//vX_ = ( (std::rand()%16)/8 + 1 ) * ( (std::rand()%2)*2-1 );
-	//vY_ = ( (std::rand()%16)/8 + 1 ) * ( (std::rand()%2)*2-1 );
-	//      ^random value from 1 to 3   ^randomly switches to negative
 }
 
 /** Update the position for spiders. Spiders move very slowly and will sometimes change directions

@@ -1,38 +1,43 @@
 #include "mainwindow.h"
 #include "gamespace.h"
 
-#include <iostream>
+#include <QInputDialog>
 
 /** Constructor. Builds the game.
 */
 MainWindow::MainWindow()
 {
-	this->setWindowTitle("Minecraft Flat Survival!");
+	this->setWindowTitle("Minecraft Flat!");
 	
 	// Layout and GUI items
 	mainLayoutUI = new QHBoxLayout;
-		// User Interface e.g. Buttons
+		// Left User Interface e.g. Buttons
 			leftLayoutUI = new QVBoxLayout;
 			leftLayoutUI->setAlignment(Qt::AlignTop);
+			// Start button
 				startButtonUI = new QPushButton("New Game", this);
 				connect(startButtonUI, SIGNAL(clicked()), this, SLOT(startNewGame()));
 			leftLayoutUI->addWidget(startButtonUI);
+			// Quit button
 				quitButtonUI = new QPushButton("Quit", this);
 				connect(quitButtonUI, SIGNAL(clicked()), this, SLOT(quitGame()));
 			leftLayoutUI->addWidget(quitButtonUI);
+			// Pause button
 				pauseButtonUI = new QPushButton("Pause", this);
 				connect(pauseButtonUI, SIGNAL(clicked()), this, SLOT(pauseGame()));
 			leftLayoutUI->addWidget(pauseButtonUI);
 			// Username
-				userNameUI = new QLabel("", this);
-				userNameUI->setAlignment(Qt::AlignRight);
-			leftLayoutUI->addWidget(userNameUI);
+				usernameUI = new QLabel("", this);
+				usernameUI->setAlignment(Qt::AlignHCenter);
+			leftLayoutUI->addWidget(usernameUI);
 			// Health
 				healthLayoutUI = new QHBoxLayout;
-					healthLabelUI = new QLabel("", this);
+				// The word "health:"
+					healthLabelUI = new QLabel("", this); // this is not set to "Health:" until the first game starts
 					healthLabelUI->setAlignment(Qt::AlignLeft);
 					healthLabelUI->setFixedWidth(80);
 				healthLayoutUI->addWidget(healthLabelUI);
+				// Health value
 					healthUI = new QLabel("", this);
 					healthUI->setAlignment(Qt::AlignRight);
 					healthUI->setFixedWidth(80); // Makes it so that increasing numbers do not mess up the width
@@ -40,9 +45,11 @@ MainWindow::MainWindow()
 			leftLayoutUI->addLayout(healthLayoutUI);
 			// Score
 				scoreLayoutUI = new QHBoxLayout;
-					scoreLabelUI = new QLabel("", this);
+				// The word "score:"
+					scoreLabelUI = new QLabel("", this); // this is not set to "Score:" until the first game starts
 					scoreLabelUI->setAlignment(Qt::AlignLeft);
 				scoreLayoutUI->addWidget(scoreLabelUI);
+				// Score value
 					scoreUI = new QLabel("", this);
 					scoreUI->setAlignment(Qt::AlignRight);
 				scoreLayoutUI->addWidget(scoreUI);
@@ -61,14 +68,13 @@ MainWindow::MainWindow()
 	this->setLayout(mainLayoutUI);
 }
 
-/** Called when the player dies
+/** Called when the player dies. Prompts the user to start a new game or 
 */
 void MainWindow::gameOver()
 {
 	gameSpaceUI->pauseGame(true);
-	std::cout << "Game Over!" << std::endl;
 	gameSpaceUI->gameOverFlag() = true;
-	QMessageBox gameOverPrompt;
+	QMessageBox gameOverPrompt(gameSpaceUI); // centers the dialog box over the gameSpace
 	gameOverPrompt.setWindowTitle("Game Over!");
 	QString* deathText = new QString("Score: ");
 	*deathText += QString::number(gameSpaceUI->score());
@@ -77,7 +83,19 @@ void MainWindow::gameOver()
 	gameOverPrompt.setInformativeText("Do want to start new game?");
 	gameOverPrompt.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
 	int choice = gameOverPrompt.exec();
-	if(choice==QMessageBox::No) {qApp->quit();}
+	if(choice==QMessageBox::No) {qApp->quit(); return;}
+	
+	enterUsername();
+}
+
+/** Prompts the user to enter a username.
+*/
+void MainWindow::enterUsername()
+{
+	//bool ok = false;
+	QString username = QInputDialog::getText(this, tr("Username"), tr("Enter username:"), QLineEdit::Normal, usernameUI->text());
+	
+	usernameUI->setText(username);
 	
 	gameSpaceUI->startNewGame();
 }
@@ -96,7 +114,7 @@ void MainWindow::startNewGame()
 	if(gameSpaceUI->gameInProgress())
 	{
 		gameSpaceUI->pauseGame(true);
-		QMessageBox newGamePrompt;
+		QMessageBox newGamePrompt(gameSpaceUI);
 		newGamePrompt.setWindowTitle("Start New Game");
 		newGamePrompt.setText("Game is in progress.");
 		newGamePrompt.setInformativeText("Do you really want to start new game?");
@@ -105,9 +123,8 @@ void MainWindow::startNewGame()
 		int choice = newGamePrompt.exec();
 		if(choice==QMessageBox::No) {gameSpaceUI->pauseGame(false); return;}
 	}
-	//Add prompt for username
 	
-	gameSpaceUI->startNewGame();
+	enterUsername();
 }
 
 /** Prompt the user to quit
@@ -118,7 +135,7 @@ void MainWindow::quitGame()
 	if(gameSpaceUI->gameInProgress())
 	{
 		gameSpaceUI->pauseGame(true);
-		QMessageBox quitPrompt;
+		QMessageBox quitPrompt(gameSpaceUI);
 		quitPrompt.setWindowTitle("Quit Game");
 		quitPrompt.setText("Game is in progress.");
 		quitPrompt.setInformativeText("Do you really want to quit?");
@@ -137,12 +154,13 @@ void MainWindow::pauseGame()
 	if(gameSpaceUI->gameInProgress())
 	{
 		gameSpaceUI->pauseGame(true);
-		QMessageBox pausePrompt;
+		QMessageBox pausePrompt(gameSpaceUI);
 		pausePrompt.setWindowTitle("Pause Game");
 		pausePrompt.setMinimumWidth(600);
 		pausePrompt.setText("Game paused.");
 		pausePrompt.setInformativeText("Press OK to resume.");
 		pausePrompt.setStandardButtons(QMessageBox::Ok);
+		pausePrompt.buttons().at(0)->setFixedWidth(2*pausePrompt.buttons().at(0)->width());
 		pausePrompt.exec();
 		gameSpaceUI->pauseGame(false);
 	}

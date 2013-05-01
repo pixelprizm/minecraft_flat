@@ -22,6 +22,7 @@ class MainWindow : public QWidget
 	public: // Member functions
 		explicit MainWindow();
 		void gameOver();
+		void enterUsername();
 
 	public slots:
 		void startNewGame();
@@ -37,7 +38,7 @@ class MainWindow : public QWidget
 				QHBoxLayout* healthLayoutUI;
 					QLabel* healthLabelUI;
 					QLabel* healthUI;
-				QLabel* userNameUI;
+				QLabel* usernameUI;
 				QHBoxLayout* scoreLayoutUI;
 					QLabel* scoreLabelUI;
 					QLabel* scoreUI;

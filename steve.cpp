@@ -59,6 +59,6 @@ void Steve::moveTo(double x, double y) { moveToX_ = x; moveToY_ = y; }
 void Steve::changeHealth(int delta)
 {
 	lives_ += delta;
-	parent()->parent()->healthUI->setText(QString::number(lives_));
+	parent()->parent()->healthUI->setNum(lives_);
 	if(lives_ <= 0) parent()->parent()->gameOver();
 }

@@ -3,9 +3,6 @@
 #include <ctime> // for rand seed
 #include <QMouseEvent>
 
-//DEBUG
-#include <iostream>
-
 
 
 /** Constructor. Loads pictures and builds the game area.
@@ -106,8 +103,6 @@ void GameSpace::startNewGame()
 	// If there was a previous game, get rid of the enemies (they remove themselves from the scene)
 	if(gameInProgress_)
 	{
-		//DEBUG
-			std::cout << "size: " << enemies_.size() + hearts_.size() << std::endl;
 		while(!enemies_.empty())
 		{
 			delete enemies_.back();
@@ -118,8 +113,6 @@ void GameSpace::startNewGame()
 			delete hearts_.back();
 			hearts_.pop_back();
 		}
-		//DEBUG
-			std::cout << "size: " << enemies_.size() + hearts_.size() << std::endl;
 	}
 	
 	
@@ -139,13 +132,11 @@ void GameSpace::startNewGame()
 	gameOverFlag_ = false;
 	timer_->start();
 	gameInProgress_ = true;
-	
-	
-	
-	//DEBUG
-		std::cout << "blegh" << std::endl;
 }
 
+/** Freeze or resume gameplay.
+*	@param pause If true, pause the game; if false, resume the game
+*/
 void GameSpace::pauseGame(bool pause)
 {
 	if(pause) { timer_->stop(); }
@@ -174,12 +165,8 @@ void GameSpace::mouseMoveEvent(QMouseEvent* event)//QGraphicsSceneMouseEvent* ev
 */
 void GameSpace::handleTimer()
 {
-	//DEBUG
-		std::cout << "agh" << std::endl;
 	player_->updatePrecisePos(WINDOW_MAX_X, WINDOW_MAX_Y); // these two lines keep the player updating at the speed of the timer, not limited by the period_ value
 	player_->move();
-	//DEBUG
-		std::cout << "after" << std::endl;
 	
 	if(timerCount_ % period_ == 0)
 	{
@@ -272,7 +259,7 @@ void GameSpace::handleTimer()
 		if(periodCount_ % 4 == 0 && !gameOverFlag_)
 		{
 			score_++;
-			parent()->scoreUI->setText(QString::number(score_));
+			parent()->scoreUI->setNum(score_);
 		}
 	}
 	timerCount_++;
