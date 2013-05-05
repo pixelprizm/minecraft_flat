@@ -45,6 +45,8 @@ class GameSpace : public QGraphicsView
 		int& score() { return score_; }
 		/* Get a reference to the game-over-flag */
 		bool& gameOverFlag() { return gameOverFlag_; }
+		/* Get a pointer to the player */
+		Steve* player() { return player_; }
 	
 	public slots:
 		void handleTimer();
@@ -74,10 +76,12 @@ class GameSpace : public QGraphicsView
 			QPixmap* skeletonPic_;
 			/* pointer to the picture for endermen */
 			QPixmap* endermanPic_;
-		/* vector full of the list of hearts */
-		std::vector<Thing*> hearts_;
+		/* vector full of the list of items */
+		std::vector<Item*> items_;
 			/* pointer to the picture for hearts */
 			QPixmap* heartPic_;
+			/* pointer to the picture for strength potions */
+			QPixmap* potionStrengthPic_;
 		/* whether there is currently a game in progress (the only time this is false is when you first start the game */
 		bool gameInProgress_;
 		/* pointer to the timer data used for animation */

@@ -18,7 +18,7 @@ Zombie::Zombie(QPixmap& picture, GameSpace* parent, Thing* player)
 * @param windowMaxX the width of the area valid for motion
 * @param windowMaxY the height of the area valid for motion
 */
-void Zombie::updatePrecisePos(int windowMaxX, int windowMaxY)
+void Zombie::updatePrecisePos(const int& windowMaxX, const int& windowMaxY)
 {
 	double deltaX = player_->x() - x(),
 	       deltaY = player_->y() - y();
@@ -34,11 +34,6 @@ void Zombie::updatePrecisePos(int windowMaxX, int windowMaxY)
 	xPrecise_ += speed_ * std::cos(th);
 	yPrecise_ += speed_ * std::sin(th);
 	
-	// Make sure zombie does not go offscreen
-	int halfWidth = pixmap().width()/2;
-	int halfHeight = pixmap().height()/2;
-	if(xPrecise_ - halfWidth  < 0         ) { xPrecise_ = 0          + halfWidth;  } // left
-	if(yPrecise_ - halfHeight < 0         ) { yPrecise_ = 0          + halfHeight; } // top
-	if(xPrecise_ + halfWidth  > windowMaxX) { xPrecise_ = windowMaxX - halfWidth;  } // right
-	if(yPrecise_ + halfHeight > windowMaxY) { yPrecise_ = windowMaxY - halfHeight; } // bottom
+	// Make sure zombie does not go offscreen (no bounce)
+	checkEdgesSlide(windowMaxX, windowMaxY);
 }

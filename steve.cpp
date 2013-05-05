@@ -15,14 +15,15 @@ Steve::Steve(QPixmap& picture, GameSpace* parent)
 	health_ = 10;
 	moveToX_ = 0;
 	moveToY_ = 0;
-	speedLimit_ = .2;
+	speedLimit_ = .2; // note: this does not directly correspond with enemies' speed because the player's move function is called more frequently than the enemies.
+	invincible_ = 0; // starts out not invincible
 }
 
 /** Called every clock pulse.  Player moves toward the cursor with a limited speed; player slows down when close to pointer.
 * @param windowMaxX Sets the maximum x-position of the player
 * @param windowMaxY Sets the maximum y-position of the player
 */
-void Steve::updatePrecisePos(int windowMaxX, int windowMaxY)
+void Steve::updatePrecisePos(const int& windowMaxX, const int& windowMaxY)
 {
 	// Find the difference between the player's position and the desired position
 	double deltaX = (moveToX_ - x()),
@@ -43,13 +44,8 @@ void Steve::updatePrecisePos(int windowMaxX, int windowMaxY)
 	xPrecise_ += r * std::cos(th);
 	yPrecise_ += r * std::sin(th);
 	
-	// Make sure player does not go offscreen
-	int halfWidth = pixmap().width()/2;
-	int halfHeight = pixmap().height()/2;
-	if(xPrecise_ - halfWidth  < 0         ) { xPrecise_ = 0          + halfWidth;  } // left
-	if(yPrecise_ - halfHeight < 0         ) { yPrecise_ = 0          + halfHeight; } // top
-	if(xPrecise_ + halfWidth  > windowMaxX) { xPrecise_ = windowMaxX - halfWidth;  } // right
-	if(yPrecise_ + halfHeight > windowMaxY) { yPrecise_ = windowMaxY - halfHeight; } // bottom
+	// Make sure player does not go offscreen (no bounce)
+	checkEdgesSlide(windowMaxX, windowMaxY);
 }
 
 /** Sets the player's target coordinates to move to (player does not move instantly to this position)

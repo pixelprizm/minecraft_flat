@@ -11,15 +11,15 @@ class Steve : public Thing
 		Steve(QPixmap& picture, GameSpace* parent);
 		
 		// Modifiers
-		void updatePrecisePos(int windowMaxX, int windowMaxY);
+		void updatePrecisePos(const int& windowMaxX, const int& windowMaxY);
 		void moveTo(double x, double y);
 		void changeHealth(int delta);
 		
 		// Accessors
-		/** Health accessor
-		*	@return Number of lives left
-		*/
+		/** Health accessor */
 		int health() { return health_; }
+		/** Remaining Invincibility accessor (reference) */
+		int& invincible() { return invincible_; }
 	
 	private: // data members
 		/** the x-position for the player to move to, i.e., the position of the mouse cursor */
@@ -30,6 +30,8 @@ class Steve : public Thing
 		double speedLimit_;
 		/** current number of lives */
 		int health_;
+		/** how long the player will remain invincible (in periods) */
+		int invincible_;
 };
 
 #endif // STEVE_H

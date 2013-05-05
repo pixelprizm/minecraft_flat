@@ -7,16 +7,16 @@
 * @param parent Pointer to the GameSpace that holds this item.
 * @param player Pointer to the player item
 */
-Heart::Heart(QPixmap& picture, GameSpace* parent, Thing* player)
+Heart::Heart(QPixmap& picture, GameSpace* parent, Steve* player)
 :
-	Thing(picture, parent, player)
+	Item(picture, parent, player)
 {
 	
 }
 
-/** Empty function for updatePrecise Pos, because Heart does not move. Parameters are not used.
+/** Heart's effect on the player--increase player's health by 1
 */
-void Heart::updatePrecisePos(int, int)
+void Heart::playerEffect()
 {
-	
+	stevePlayer_->changeHealth(+1);
 }

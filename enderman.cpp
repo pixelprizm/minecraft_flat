@@ -18,26 +18,21 @@ Enderman::Enderman(QPixmap& picture, GameSpace* parent, Thing* player)
 * @param windowMaxX the width of the area valid for motion
 * @param windowMaxY the height of the area valid for motion
 */
-void Enderman::updatePrecisePos(int windowMaxX, int windowMaxY)
+void Enderman::updatePrecisePos(const int& windowMaxX, const int& windowMaxY)
 {
 	if(std::rand()%80 == 0)
 	{
 		double r = std::rand() % 90 + 25;
-		double th = (((double)(std::rand()%64))/64)*(2*PI);
+		double th = ((std::rand()%64)/64.0)*(2.0*PI);
 		double deltaX = r * std::cos(th);
 		double deltaY = r * std::sin(th);
 		xPrecise_ += deltaX;
 		yPrecise_ += deltaY;
 		
-		xPrecise_ += (player_->x() - x()) / 8;
-		yPrecise_ += (player_->y() - y()) / 8;
+		xPrecise_ += (player_->x() - x()) / 8.0;
+		yPrecise_ += (player_->y() - y()) / 8.0;
 		
-		// Make sure enderman does not go offscreen
-		int halfWidth = pixmap().width()/2;
-		int halfHeight = pixmap().height()/2;
-		if(xPrecise_ - halfWidth  < 0         ) { xPrecise_ -= deltaX; } // left
-		if(yPrecise_ - halfHeight < 0         ) { yPrecise_ -= deltaY; } // top
-		if(xPrecise_ + halfWidth  > windowMaxX) { xPrecise_ -= deltaX; } // right
-		if(yPrecise_ + halfHeight > windowMaxY) { yPrecise_ -= deltaY; } // bottom
+		// Make sure enderman does not go offscreen (no bounce)
+		checkEdgesSlide(windowMaxX, windowMaxY);
 	}
 }

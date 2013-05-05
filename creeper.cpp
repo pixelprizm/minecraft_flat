@@ -11,8 +11,8 @@ Creeper::Creeper(QPixmap& picture, GameSpace* parent, Thing* player)
 :
 	Thing(picture, parent, player)
 {
-	double speed = (std::rand()%16)/8 + .25; // random speed from .25 to 2.25
-	double theta = (((double)(std::rand()%64))/64)*(2*PI); // random angle
+	double speed = (std::rand()%32)/16.0 + .25; // random speed from .25 to 2.25
+	double theta = ((std::rand()%64)/64.0)*(2.0*PI); // random angle
 	vX_ = speed * std::cos(theta);
 	vY_ = speed * std::sin(theta);
 }
@@ -21,17 +21,12 @@ Creeper::Creeper(QPixmap& picture, GameSpace* parent, Thing* player)
 * @param windowMaxX the width of the area valid for motion
 * @param windowMaxY the height of the area valid for motion
 */
-void Creeper::updatePrecisePos(int windowMaxX, int windowMaxY)
+void Creeper::updatePrecisePos(const int& windowMaxX, const int& windowMaxY)
 {
 	// Move the creeper
 	xPrecise_ += vX_;
 	yPrecise_ += vY_;
 	
-	// Make sure creeper does not go offscreen; switch its direction if it does
-	int halfWidth = pixmap().width()/2;
-	int halfHeight = pixmap().height()/2;
-	if(xPrecise_ - halfWidth  < 0         ) { vX_ = -vX_; xPrecise_+=vX_; } // left
-	if(yPrecise_ - halfHeight < 0         ) { vY_ = -vY_; yPrecise_+=vY_; } // top
-	if(xPrecise_ + halfWidth  > windowMaxX) { vX_ = -vX_; xPrecise_+=vX_; } // right
-	if(yPrecise_ + halfHeight > windowMaxY) { vY_ = -vY_; yPrecise_+=vY_; } // bottom
+	// Make sure creeper does not go offscreen (bounce)
+	checkEdgesBounce(windowMaxX, windowMaxY, vX_, vY_);
 }

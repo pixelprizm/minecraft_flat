@@ -13,7 +13,6 @@ GameSpace::GameSpace(MainWindow* parent)
 	QGraphicsView(parent)
 {
 	parent_ = parent;
-	gameInProgress_ = false;
 	
 	// Initialize scene
 	scene_ = new QGraphicsScene;
@@ -35,25 +34,24 @@ GameSpace::GameSpace(MainWindow* parent)
 	skeletonPic_ = new QPixmap("images/skeleton.png");
 	endermanPic_ = new QPixmap("images/enderman.png");
 	
-	// Initialize heart item
+	// Initialize item pixmaps
 	heartPic_ = new QPixmap("images/heart.png");
+	potionStrengthPic_ = new QPixmap("images/potion_strength.png");
 	
 	// Initialize timer
 	timer_ = new QTimer(this);
 	timer_->setInterval(1); // this is kept low so that the player's update speed is fast
 	connect(timer_, SIGNAL(timeout()), this, SLOT(handleTimer()));
 	
-	// Initialize values used in controlling speed of the game
-	timerCount_ = 0;
-	period_ = 30;
-	periodCount_ = 1;
-	
-	// Set mouse flags
+	// Enable mouse capture
 	setMouseTracking(true);
 	setFocus();
 	
-	// Initialize score & game over flag
+	// Initialize score
 	score_ = 0;
+	
+	// Initialize game status flags
+	gameInProgress_ = false;
 	gameOverFlag_ = false;
 }
 
@@ -69,10 +67,10 @@ GameSpace::~GameSpace()
 			delete enemies_.back();
 			enemies_.pop_back();
 		}
-		while(!hearts_.empty())
+		while(!items_.empty())
 		{
-			delete hearts_.back();
-			hearts_.pop_back();
+			delete items_.back();
+			items_.pop_back();
 		}
 	}
 	delete player_;
@@ -98,10 +96,6 @@ void GameSpace::startNewGame()
 	player_->moveTo(WINDOW_MAX_X/2,WINDOW_MAX_Y/2); // so that the player does not move to a random location on game start
 	scene_->addItem(player_);
 	
-	// Initialize label that displays remaining health
-	parent()->healthLabelUI->setText("Health:");
-	parent()->healthUI->setText(QString::number(player_->health()));
-	
 	// If there was a previous game, get rid of the enemies (they remove themselves from the scene)
 	if(gameInProgress_)
 	{
@@ -110,30 +104,32 @@ void GameSpace::startNewGame()
 			delete enemies_.back();
 			enemies_.pop_back();
 		}
-		while(!hearts_.empty())
+		while(!items_.empty())
 		{
-			delete hearts_.back();
-			hearts_.pop_back();
+			delete items_.back();
+			items_.pop_back();
 		}
 	}
 	
 	
 	
 	// Initialize values used in controlling speed of the game
-	timerCount_ = 0;
+	timerCount_ = 1; // it's 1 so that items & enemies don't spawn instantly
 	period_ = 30;
-	periodCount_ = 1; // it's 1 so that enemies don't spawn instantly
+	periodCount_ = 1; // it's 1 so that items & enemies don't spawn instantly
 	
 	// Initialize score
-	parent()->scoreLabelUI->setText("Score:");
 	score_ = 0;
-	parent()->scoreUI->setText(QString::number(score_));
+	
+	// Set game status flags
 	gameOverFlag_ = false;
+	gameInProgress_ = true;
+	
+	// Update MainWindow's labels (note: they're blank unless gameInProgress_ to be true)
+	parent_->updateLabels();
 	
 	// Start the game!
-	gameOverFlag_ = false;
 	timer_->start();
-	gameInProgress_ = true;
 }
 
 /** Freeze or resume gameplay.
@@ -167,102 +163,105 @@ void GameSpace::mouseMoveEvent(QMouseEvent* event)
 */
 void GameSpace::handleTimer()
 {
-	player_->updatePrecisePos(WINDOW_MAX_X, WINDOW_MAX_Y); // these two lines keep the player updating at the speed of the timer, not limited by the period_ value
+	// Update the player's position, independent of period_; also makes player movement very smooth
+	player_->updatePrecisePos(WINDOW_MAX_X, WINDOW_MAX_Y);
 	player_->move();
+	
+	// If player is invincible, update invincibility
+	if(timerCount_ % 225 == 0 && player_->invincible()) { player_->invincible()--; }
+		
+	// Add a new strength potion every number of periods below
+	if(timerCount_ % 20000 == 0)
+	{
+		Item* newItem = new PotionStrength(*potionStrengthPic_, this, player_);
+		// Initialize the potion's position, add it to vector, add it to the scene
+		newItem->randomPos(WINDOW_MAX_X, WINDOW_MAX_Y);
+		items_.push_back(newItem);
+		scene_->addItem(newItem);
+	}
 	
 	if(timerCount_ % period_ == 0)
 	{
-		// Add a new enemy every specified number of periods
-		if(periodCount_ % 83 == 0)
-		{
-			Thing* newEnemy = NULL;
-			QPixmap* newEnemyPic = NULL;
-			switch(rand()%5)
-			{
-				case 0: newEnemy = new Zombie(*zombiePic_, this, player_);
-					newEnemyPic = zombiePic_;
-					break;
-				case 1: newEnemy = new Spider(*spiderPic_, this, player_);
-					newEnemyPic = spiderPic_;
-					break;
-				case 2: newEnemy = new Creeper(*creeperPic_, this, player_);
-					newEnemyPic = creeperPic_;
-					break;
-				case 3: newEnemy = new Skeleton(*skeletonPic_, this, player_);
-					newEnemyPic = skeletonPic_;
-					break;
-				case 4: newEnemy = new Enderman(*endermanPic_, this, player_);
-					newEnemyPic = endermanPic_;
-					break;
-			}
-			
-			// Initialize the enemy's position
-			newEnemy->setPos
-			(
-				rand()%(WINDOW_MAX_X - newEnemyPic->width() ) + (newEnemyPic->width()  / 2),
-				rand()%(WINDOW_MAX_Y - newEnemyPic->height()) + (newEnemyPic->height() / 2)
-			);//        ^rand range                              ^moves the enemy onto the view
-			
-			// Add the enemy to the list of enemies and to the scene
-			enemies_.push_back(newEnemy);
-			scene_->addItem(newEnemy);
-		}
+		// ------------------- ADD NEW THINGS ----------------------
 		
-		// Add a new heart every specified number of periods
-		if(periodCount_ % 376 == 0)
-		{
-			Thing* newItem = new Heart(*heartPic_, this, player_);
-			// Initialize the item's position
-			newItem->setPos
-			(
-				rand()%(WINDOW_MAX_X - heartPic_->width() ) + (heartPic_->width()  / 2),
-				rand()%(WINDOW_MAX_Y - heartPic_->height()) + (heartPic_->height() / 2)
-			);
-			hearts_.push_back(newItem);
-			scene_->addItem(newItem);
-		}
-		
-		// Update each enemy & check for collisions
-		for(unsigned int i = 0; i < enemies_.size(); i++)
-		{
-			enemies_[i]->updatePrecisePos(WINDOW_MAX_X, WINDOW_MAX_Y);
-			enemies_[i]->move();
+			// Add a new enemy every specified number of periods
+			if(periodCount_ % 63 == 0)
+			{
+				Thing* newEnemy = NULL;
+				switch(rand()%5)
+				{
+					case 0: newEnemy = new Zombie(*zombiePic_, this, player_);
+						break;
+					case 1: newEnemy = new Spider(*spiderPic_, this, player_);
+						break;
+					case 2: newEnemy = new Creeper(*creeperPic_, this, player_);
+						break;
+					case 3: newEnemy = new Skeleton(*skeletonPic_, this, player_);
+						break;
+					case 4: newEnemy = new Enderman(*endermanPic_, this, player_);
+						break;
+				}
 			
-			if(enemies_[i]->collidesWithItem(player_))
-			{
-				delete enemies_[i];
-				enemies_.erase(enemies_.begin()+i);
-				player_->changeHealth(-1);
-				if(gameOverFlag_) return;
+				// Initialize the enemy's position
+				newEnemy->randomPos(WINDOW_MAX_X, WINDOW_MAX_Y);
+			
+				// Add the enemy to the list of enemies and to the scene
+				enemies_.push_back(newEnemy);
+				scene_->addItem(newEnemy);
 			}
-		}
-		// Check for collisions between hearts and the player
-		for(unsigned int i = 0; i < hearts_.size(); i++)
-		{
-			if(hearts_[i]->collidesWithItem(player_))
-			{
-				delete hearts_[i];
-				hearts_.erase(hearts_.begin()+i);
-				player_->changeHealth(+1);
-				score_+=100;
-			}
-		}
 		
-		// Every certain number of periods, speed up the enemies by decreasing the period
-		if(periodCount_ % 300 == 0)
-		{
-			if(period_ > 8) period_--;
-			//DEBUG
-			//	player_->changeHealth(-10);
-		}
-		periodCount_++;
+			// Add a new heart every number of periods below
+			if(periodCount_ % 376 == 0)
+			{
+				Item* newItem = new Heart(*heartPic_, this, player_);
+				// Initialize the heart's position, add it to vector, add it to the scene
+				newItem->randomPos(WINDOW_MAX_X, WINDOW_MAX_Y);
+				items_.push_back(newItem);
+				scene_->addItem(newItem);
+			}
+		
+		// ------------------------ UPDATE THINGS ---------------------------------
+			// Update each item & check for collisions between items and the player
+			for(unsigned int i = 0; i < items_.size(); i++)
+			{
+				// Move the item (hearts don't move, potions do)
+				items_[i]->updatePrecisePos(WINDOW_MAX_X, WINDOW_MAX_Y);
+				items_[i]->move();
+			
+				if(items_[i]->collidesWithItem(player_))
+				{
+					items_[i]->playerEffect();
+					score_+=100;
+					delete items_[i]; // remove from scene & delete data
+					items_.erase(items_.begin()+i); // remove pointer form vector
+				}
+			}
+			// Update each enemy & check for collisions
+			for(unsigned int i = 0; i < enemies_.size(); i++)
+			{
+				enemies_[i]->updatePrecisePos(WINDOW_MAX_X, WINDOW_MAX_Y);
+				enemies_[i]->move();
+			
+				if(enemies_[i]->collidesWithItem(player_))
+				{
+					delete enemies_[i]; // remove from scene & delete data
+					enemies_.erase(enemies_.begin()+i); // remove pointer form vector
+					if(player_->invincible()==0) player_->changeHealth(-1); // if player is not invincible, give him damage
+					if(gameOverFlag_) return; // in case a game ends when the player's health changes, stop trying to detect collisions
+				}
+			}
 		
 		// Update score
-		if(periodCount_ % 4 == 0 && !gameOverFlag_)
-		{
-			score_++;
-			parent()->scoreUI->setNum(score_);
-		}
+		if(periodCount_ % 4 == 0 && !gameOverFlag_){ score_++; parent()->scoreUI->setNum(score_);}
+	
+		// Update MainWindow's labels
+		parent_->updateLabels();
+		
+		// Every certain number of periods, speed up the game by decreasing the period (does not affect player's speed)
+		if(periodCount_ % 300 == 0 && period_ > 8) period_--;
+		
+		// Increase period count
+		periodCount_++;
 	}
 	timerCount_++;
 }

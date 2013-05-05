@@ -9,8 +9,10 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QMessageBox>
+#include <QString>
 
 #include "gamespace.h"
+#include "steve.h" // for 
 
 #define WINDOW_MAX_X 800
 #define WINDOW_MAX_Y WINDOW_MAX_X*3/4
@@ -22,7 +24,10 @@ class MainWindow : public QWidget
 	public: // Member functions
 		explicit MainWindow();
 		void gameOver();
-		void enterUsername();
+		void enterUsernameAndStartGame();
+		
+		// Helper functions
+		void updateLabels();
 
 	public slots:
 		void startNewGame();
@@ -54,10 +59,19 @@ class MainWindow : public QWidget
 					QLabel* scoreLabelUI;
 					/** Pointer to score value */
 					QLabel* scoreUI;
+				/** Pointer to layout for invincible label and player's invincible value */
+				QHBoxLayout* invincibleLayoutUI;
+					/** Pointer to score label */
+					QLabel* invincibleLabelUI;
+					/** Pointer to score value */
+					QLabel* invincibleUI;
 			/** Pointer to layout for game area (used to center the game area within its layout area) */
 			QVBoxLayout* gameSpaceLayoutUI;
 				/** Pointer to gameplay area of the window */
 				GameSpace* gameSpaceUI;
+	
+	private: // Data members
+		QString username_;
 };
 
 #endif // MAINWINDOW_H

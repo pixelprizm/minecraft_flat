@@ -28,7 +28,7 @@ void Spider::randomizeVel()
 * @param windowMaxX the width of the area valid for motion
 * @param windowMaxY the height of the area valid for motion
 */
-void Spider::updatePrecisePos(int windowMaxX, int windowMaxY)
+void Spider::updatePrecisePos(const int& windowMaxX, const int& windowMaxY)
 {
 	// Random chance of changing direction
 	if(std::rand()%64==0)
@@ -40,11 +40,6 @@ void Spider::updatePrecisePos(int windowMaxX, int windowMaxY)
 	xPrecise_ += vX_;
 	yPrecise_ += vY_;
 	
-	// Make sure spider does not go offscreen; switch its direction if it does
-	int halfWidth = pixmap().width()/2;
-	int halfHeight = pixmap().height()/2;
-	if(xPrecise_ - halfWidth  < 0         ) { vX_ = -vX_; xPrecise_+=vX_; } // left
-	if(yPrecise_ - halfHeight < 0         ) { vY_ = -vY_; yPrecise_+=vY_; } // top
-	if(xPrecise_ + halfWidth  > windowMaxX) { vX_ = -vX_; xPrecise_+=vX_; } // right
-	if(yPrecise_ + halfHeight > windowMaxY) { vY_ = -vY_; yPrecise_+=vY_; } // bottom
+	// Make sure spider does not go offscreen (bounce)
+	checkEdgesBounce(windowMaxX, windowMaxY, vX_, vY_);
 }
