@@ -23,8 +23,9 @@ config.txt
 html/*
 latex/*
 
-# Project specific executables
+# Project specific executables and files
 game_gauderma
+scores.txt
 
 # OS temporary files
 *~
