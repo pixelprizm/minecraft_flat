@@ -8,15 +8,28 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QLabel>
-#include <QMessageBox>
-#include <QString>
+
+#include <utility> // for pair (for ScorePair struct)
+#include <vector> // for list of ScorePairs
+#include <string>
 
 #include "gamespace.h"
-#include "steve.h" // for 
 
 #define WINDOW_MAX_X 800
 #define WINDOW_MAX_Y WINDOW_MAX_X*3/4
 
+
+/** Struct for keeping track of scores--holds a score and a username and defines an operator for sorting
+*/
+struct ScorePair : public std::pair<int, std::string> // the std::pair is required because std::pair has swap() defined for it
+{
+	bool operator<(const ScorePair rhs) { return this->first < rhs.first; }
+};
+
+
+
+/** class for the window that contains the game
+*/
 class MainWindow : public QWidget
 {
 	Q_OBJECT
@@ -27,6 +40,8 @@ class MainWindow : public QWidget
 		void enterUsernameAndStartGame();
 		
 		// Helper functions
+		void loadScores();
+		void saveScores();
 		void updateLabels();
 
 	public slots:
@@ -71,7 +86,11 @@ class MainWindow : public QWidget
 				GameSpace* gameSpaceUI;
 	
 	private: // Data members
-		QString username_;
+		// note: use gameSpaceUI->score() for current score.
+		/** Current user's username */
+		std::string username_;
+		/** list of score-username pairs */
+		std::vector<ScorePair> scoreData_;
 };
 
 #endif // MAINWINDOW_H

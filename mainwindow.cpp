@@ -1,7 +1,17 @@
 #include "mainwindow.h"
 #include "gamespace.h"
 
+#include <QMessageBox>
 #include <QInputDialog>
+
+#include <fstream>
+#include <algorithm>
+#include <sstream>
+
+#include <iostream>
+
+using namespace std;
+
 
 /** Constructor. Builds the game's main window UI.
 */
@@ -71,6 +81,7 @@ MainWindow::MainWindow()
 					invincibleUI->setFixedWidth(70);
 				invincibleLayoutUI->addWidget(invincibleUI);
 			leftLayoutUI->addLayout(invincibleLayoutUI);
+			//add a high-score list view
 		mainLayoutUI->addLayout(leftLayoutUI);
 		
 		// Gameplay Area
@@ -83,6 +94,52 @@ MainWindow::MainWindow()
 		mainLayoutUI->addLayout(gameSpaceLayoutUI);
 		
 	this->setLayout(mainLayoutUI);
+	
+	loadScores();
+}
+
+
+
+// ===============================================================================
+// -------------------------------- HELPER FUNCTIONS -----------------------------
+// ===============================================================================
+
+/** Helper function to load scores from the file and fill up scoreData_. Called by the constructor.
+*/
+void MainWindow::loadScores()
+{
+	// Load scores
+	ifstream scoreFile("scores.txt", ios::in);
+	while(!scoreFile.eof())
+	{
+		ScorePair newScorePair;
+		scoreFile >> newScorePair.first; // puts the score in
+		if(newScorePair.first == 0) continue; // don't keep scores that are zero, in case any exist
+		scoreFile >> ws; // extracts leading whitespace characters
+		getline(scoreFile, newScorePair.second); // puts the username in
+		if(!newScorePair.second.empty()) scoreData_.push_back(newScorePair);
+		cout << "load: " << scoreData_.back().first << " " << scoreData_.back().second << endl;
+	}
+}
+
+/** Helper function to save the current score and username to the scores file
+*/
+void MainWindow::saveScores()
+{
+	if(gameSpaceUI->gameInProgress())
+	{
+		ScorePair currScorePair;
+		currScorePair.first = gameSpaceUI->score();
+		currScorePair.second = username_;
+		if(!currScorePair.second.empty()) scoreData_.push_back(currScorePair);
+	}
+	sort(scoreData_.begin(), scoreData_.end());
+	
+	ofstream scoreFile("scores.txt", ios::out);
+	for(unsigned int i = 0; i < scoreData_.size(); i++)
+	{
+		scoreFile << scoreData_[i].first << " " << scoreData_[i].second << endl;
+	}
 }
 
 /** Helper function to update the labels
@@ -91,7 +148,7 @@ void MainWindow::updateLabels()
 {
 	if(gameSpaceUI->gameInProgress())
 	{
-		usernameUI->setText(username_);
+		usernameUI->setText(username_.c_str());
 		healthLabelUI->setText("Health:");
 		healthUI->setText(QString::number(gameSpaceUI->player()->health()));
 		scoreLabelUI->setText("Score:");
@@ -126,12 +183,15 @@ void MainWindow::gameOver()
 	gameSpaceUI->pauseGame(true);
 	gameSpaceUI->gameOverFlag() = true;
 	
-	QMessageBox gameOverPrompt(gameSpaceUI); // centers the dialog box over the gameSpace
+	saveScores();
+	
+	// Pop up game over box
+	QMessageBox gameOverPrompt(gameSpaceUI); // passing gameSpaceUI centers the dialog box over the gameSpace
 	gameOverPrompt.setWindowTitle("Game Over!");
-	QString* deathText = new QString("Score: ");
-	*deathText += QString::number(gameSpaceUI->score());
-	//eventually, save the score to a file here.
-	gameOverPrompt.setText(*deathText);
+	QString deathText("Score: ");
+	deathText += QString::number(gameSpaceUI->score());
+	deathText += "\nScore saved.";
+	gameOverPrompt.setText(deathText);
 	gameOverPrompt.setInformativeText("Do want to start new game?");
 	gameOverPrompt.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
 	gameOverPrompt.setDefaultButton(QMessageBox::Yes);
@@ -145,7 +205,7 @@ void MainWindow::gameOver()
 */
 void MainWindow::enterUsernameAndStartGame()
 {
-	username_ = QInputDialog::getText(this, tr("Username"), tr("Enter username:"), QLineEdit::Normal, username_);
+ username_ = QInputDialog::getText(this, tr("Enter Username"), tr("You must enter a username for your score to be saved."), QLineEdit::Normal, username_.c_str()).toStdString();
 	
 	gameSpaceUI->startNewGame();
 }
@@ -174,6 +234,8 @@ void MainWindow::startNewGame()
 		if(choice==QMessageBox::No) {gameSpaceUI->pauseGame(false); return;}
 	}
 	
+	saveScores();
+	
 	enterUsernameAndStartGame();
 }
 
@@ -188,12 +250,13 @@ void MainWindow::quitGame()
 		QMessageBox quitPrompt(gameSpaceUI);
 		quitPrompt.setWindowTitle("Quit Game");
 		quitPrompt.setText("Game is in progress.");
-		quitPrompt.setInformativeText("Do you really want to quit?");
+		quitPrompt.setInformativeText("Do you really want to quit?\nScore will be saved.");
 		quitPrompt.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
 		// quitPrompt.setDefaultButton(QMessageBox::No); // looks bad
 		int choice = quitPrompt.exec();
 		if(choice==QMessageBox::No) {gameSpaceUI->pauseGame(false); return;}
 	}
+	saveScores();
 	qApp->quit();
 }
 

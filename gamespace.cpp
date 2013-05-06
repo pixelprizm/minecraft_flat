@@ -115,7 +115,7 @@ void GameSpace::startNewGame()
 	
 	// Initialize values used in controlling speed of the game
 	timerCount_ = 1; // it's 1 so that items & enemies don't spawn instantly
-	period_ = 30;
+	period_ = 28;
 	periodCount_ = 1; // it's 1 so that items & enemies don't spawn instantly
 	
 	// Initialize score
@@ -168,7 +168,7 @@ void GameSpace::handleTimer()
 	player_->move();
 	
 	// If player is invincible, update invincibility
-	if(timerCount_ % 225 == 0 && player_->invincible()) { player_->invincible()--; }
+	if(timerCount_ % 300 == 0 && player_->invincible()) { player_->invincible()--; }
 		
 	// Add a new strength potion every number of periods below
 	if(timerCount_ % 20000 == 0)
@@ -253,15 +253,16 @@ void GameSpace::handleTimer()
 		
 		// Update score
 		if(periodCount_ % 4 == 0 && !gameOverFlag_){ score_++; parent()->scoreUI->setNum(score_);}
-	
+		
 		// Update MainWindow's labels
 		parent_->updateLabels();
-		
-		// Every certain number of periods, speed up the game by decreasing the period (does not affect player's speed)
-		if(periodCount_ % 300 == 0 && period_ > 8) period_--;
 		
 		// Increase period count
 		periodCount_++;
 	}
+		
+	// Every certain number of timer pulses, speed up the game by decreasing the period (does not affect player's speed)
+	if(timerCount_ % 18000 == 0 && period_ > 8) period_--;
+	
 	timerCount_++;
 }
