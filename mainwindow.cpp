@@ -5,8 +5,8 @@
 #include <QInputDialog>
 
 #include <fstream>
-#include <algorithm>
-#include <sstream>
+#include <algorithm> // for sorting scores
+//#include <sstream> // for inserting scores into 
 
 #include <iostream>
 
@@ -69,7 +69,6 @@ MainWindow::MainWindow()
 			leftLayoutUI->addLayout(scoreLayoutUI);
 			// Invincibility
 				invincibleLayoutUI = new QHBoxLayout;
-				invincibleLayoutUI->setAlignment(Qt::AlignBottom);
 				// The word "Invincible for:"
 					invincibleLabelUI = new QLabel(this); // this is not set to "..." until the player becomes invincible
 					invincibleLabelUI->setAlignment(Qt::AlignLeft);
@@ -81,7 +80,15 @@ MainWindow::MainWindow()
 					invincibleUI->setFixedWidth(70);
 				invincibleLayoutUI->addWidget(invincibleUI);
 			leftLayoutUI->addLayout(invincibleLayoutUI);
-			//add a high-score list view
+			// High scores list
+				highScoresLayoutUI = new QVBoxLayout;
+				// The words "High Scores:"
+					highScoresLabelUI = new QLabel("High Scores:",this);
+				highScoresLayoutUI->addWidget(highScoresLabelUI);
+				// The high scores list box
+					highScoresListUI = new QListWidget(this);
+				highScoresLayoutUI->addWidget(highScoresListUI);
+			leftLayoutUI->addLayout(highScoresLayoutUI);
 		mainLayoutUI->addLayout(leftLayoutUI);
 		
 		// Gameplay Area
@@ -118,8 +125,10 @@ void MainWindow::loadScores()
 		scoreFile >> ws; // extracts leading whitespace characters
 		getline(scoreFile, newScorePair.second); // puts the username in
 		if(!newScorePair.second.empty()) scoreData_.push_back(newScorePair);
-		cout << "load: " << scoreData_.back().first << " " << scoreData_.back().second << endl;
 	}
+	sort(scoreData_.begin(), scoreData_.end());
+	
+	updateHighScoresList();
 }
 
 /** Helper function to save the current score and username to the scores file
@@ -139,6 +148,24 @@ void MainWindow::saveScores()
 	for(unsigned int i = 0; i < scoreData_.size(); i++)
 	{
 		scoreFile << scoreData_[i].first << " " << scoreData_[i].second << endl;
+	}
+}
+
+/** Helper function to update the UI scorelist with the scores and usernames in scoreData
+*/
+void MainWindow::updateHighScoresList()
+{
+	highScoresListUI->clear();
+	for(int i = scoreData_.size()-1; i >= 0; i--)
+	{
+		QString temp(QString::number(scoreData_[i].first));
+		if(scoreData_[i].first < 10000) temp += " ";
+		if(scoreData_[i].first < 1000) temp += " ";
+		if(scoreData_[i].first < 100) temp += " ";
+		if(scoreData_[i].first < 10) temp += " ";
+		temp += " ";
+		temp += scoreData_[i].second.c_str();
+		highScoresListUI->addItem(temp);
 	}
 }
 
@@ -205,7 +232,9 @@ void MainWindow::gameOver()
 */
 void MainWindow::enterUsernameAndStartGame()
 {
- username_ = QInputDialog::getText(this, tr("Enter Username"), tr("You must enter a username for your score to be saved."), QLineEdit::Normal, username_.c_str()).toStdString();
+	username_ = QInputDialog::getText(this, tr("Enter Username"), tr("You must enter a username for your score to be saved."), QLineEdit::Normal, username_.c_str()).toStdString();
+	
+	updateHighScoresList();
 	
 	gameSpaceUI->startNewGame();
 }
@@ -229,7 +258,6 @@ void MainWindow::startNewGame()
 		newGamePrompt.setText("Game is in progress.");
 		newGamePrompt.setInformativeText("Do you really want to start new game?");
 		newGamePrompt.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-		// newGamePrompt.setDefaultButton(QMessageBox::No); // looks bad
 		int choice = newGamePrompt.exec();
 		if(choice==QMessageBox::No) {gameSpaceUI->pauseGame(false); return;}
 	}
@@ -252,7 +280,6 @@ void MainWindow::quitGame()
 		quitPrompt.setText("Game is in progress.");
 		quitPrompt.setInformativeText("Do you really want to quit?\nScore will be saved.");
 		quitPrompt.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-		// quitPrompt.setDefaultButton(QMessageBox::No); // looks bad
 		int choice = quitPrompt.exec();
 		if(choice==QMessageBox::No) {gameSpaceUI->pauseGame(false); return;}
 	}
@@ -269,7 +296,7 @@ void MainWindow::pauseGame()
 		gameSpaceUI->pauseGame(true);
 		QMessageBox pausePrompt(gameSpaceUI);
 		pausePrompt.setWindowTitle("Pause Game");
-		pausePrompt.setMinimumWidth(600);
+		pausePrompt.setMinimumWidth(600); // otherwise it's way too narrow
 		pausePrompt.setText("Game paused.");
 		pausePrompt.setInformativeText("Press OK to resume.");
 		pausePrompt.setStandardButtons(QMessageBox::Ok);

@@ -1,13 +1,13 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QApplication>
-	// needed in order to call qApp->close()
+#include <QApplication>	// needed in order to call qApp.quit()
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QLabel>
+#include <QListWidget>
 
 #include <utility> // for pair (for ScorePair struct)
 #include <vector> // for list of ScorePairs
@@ -42,6 +42,7 @@ class MainWindow : public QWidget
 		// Helper functions
 		void loadScores();
 		void saveScores();
+		void updateHighScoresList();
 		void updateLabels();
 
 	public slots:
@@ -80,6 +81,12 @@ class MainWindow : public QWidget
 					QLabel* invincibleLabelUI;
 					/** Pointer to score value */
 					QLabel* invincibleUI;
+				/** Pointer to layout for high scores (contains just a label for high scores and the box of high scores */
+				QVBoxLayout* highScoresLayoutUI;
+					/** Pointer to high scores label */
+					QLabel* highScoresLabelUI;
+					/** Pointer to high scores box */
+					QListWidget* highScoresListUI;
 			/** Pointer to layout for game area (used to center the game area within its layout area) */
 			QVBoxLayout* gameSpaceLayoutUI;
 				/** Pointer to gameplay area of the window */
