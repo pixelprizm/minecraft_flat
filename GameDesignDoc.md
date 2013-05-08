@@ -3,14 +3,14 @@ My game will be a continuous survival game whose characters are based on the Min
 
 ## Game characters:
 ![Steve](/images/steve.png "Steve") The Player will be freely controlled by the mouse, independent of the game's speeding up.
-##### Enemies:
+#### Enemies:
 + ![Zombie](/images/zombie.png "Zombie") Zombies will move slowly, always toward the player.
 + ![Creeper](/images/creeper.png "Creeper") Creepers will move slightly faster toward the player and explode if they get close.
 + ![Spider](/images/spider.png "Spider") Spiders will move in a random direction and speed; there is a random chance that it will change directions again.
 + ![Skeleton](/images/skeleton.png "Skeleton") Skeletons will circle the player with a variable radius, set by the current distance between them and the player. with a random chance of switching directions.
 + ![Enderman](/images/enderman.png "Enderman") Endermen will teleport randomly in a limited radius, with a greater chance of teleporting toward the player.
 
-##### Items:
+#### Items:
 + ![Heart](/images/heart.png "Heart") Hearts will replenish the player's health.  These hearts will remain stationary.
 + ![Strength Potion](/images/potion_strength.png "Strength Potion") Strength Potions will grant the player invincibility for a limited amount of time, as displayed on the window's left.  They will move in small circles.
 
@@ -28,10 +28,10 @@ The player will have one life but multiple health points.  Different enemies wil
 
 
 ## User Interface
-#### Sketch:
-![UI Sketch](http://i.imgur.com/3BQU3em.png "UI Sketch")
+#### Screenshot:
+![UI Screenshot](/images/GameDesignDoc_UIScreenshot.png "UI Screenshot")
 
-User interface elements:
+#### User interface elements:
 + NEW GAME button starts a new game, prompting the user first if a game is in progress
 + QUIT button closes the game, prompting the user first if a game is in progress
 + Middle region is gameplay region (cursor pictured on top of the Player character)
