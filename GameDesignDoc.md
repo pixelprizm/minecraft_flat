@@ -1,18 +1,17 @@
 # Game Design Document
 My game will be a continuous survival game whose characters are based on the Minecraft characters (mobs)
 
-## Entities
-#### Example of game characters:
-![Minecraft Mobs](http://fc09.deviantart.net/fs71/f/2012/153/2/c/minecraft_mob_magnets_by_vandonovan-d51yxlt.jpg "Minecraft Characters")
-
-Each character will move differently.  The Player (bottom-right in the above picture) will be freely controlled by the mouse, independent of the clock.
-Enemies:
-+ Zombies (top-middle) will move slowly, always toward the player.
-+ Creepers (middle-left) will move slightly faster toward the player and explode if they get close.
-+ Spiders (not pictured) will move in a random direction and speed; there is a random chance that it will change directions again.
-+ Endermen (top-left) will teleport randomly in a limited radius, with a greater chance of teleporting toward the player.
-+ Skeletons (top-right) will circle the player with a random chance of switching directions.
-Additionally, there will be hearts that randomly appear, which will replenish the player's health.  These hearts will remain stationary.
+## Game characters:
+![Steve](/images/steve.png "Steve") The Player will be freely controlled by the mouse, independent of the game's speeding up.
+##### Enemies:
++ ![Zombie](/images/zombie.png "Zombie") Zombies will move slowly, always toward the player.
++ ![Creeper](/images/creeper.png "Creeper") Creepers will move slightly faster toward the player and explode if they get close.
++ ![Spider](/images/spider.png "Spider") Spiders will move in a random direction and speed; there is a random chance that it will change directions again.
++ ![Skeleton](/images/skeleton.png "Skeleton") Endermen will teleport randomly in a limited radius, with a greater chance of teleporting toward the player.
++ ![Enderman](/images/enderman.png "Enderman") Skeletons will circle the player with a random chance of switching directions.
+##### Items:
++ ![Heart](/images/heart.png "Heart") Hearts will replenish the player's health.  These hearts will remain stationary.
++ ![Strength Potion](/images/potion_strength.png "Strength Potion") Strength Potions will grant the player invincibility for a limited amount of time, as displayed on the window's left.  They will move in small circles.
 
 
 ## Gameplay
