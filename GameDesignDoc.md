@@ -1,7 +1,8 @@
 # Game Design Document
 My game will be a continuous survival game whose characters are based on the Minecraft characters (mobs)
 
-## Game characters:
+## Characters
+#### Player:
 ![Steve](/images/steve.png "Steve") The Player will be freely controlled by the mouse, independent of the game's speeding up.
 #### Enemies:
 + ![Zombie](/images/zombie.png "Zombie") Zombies will move slowly, always toward the player.
@@ -20,7 +21,7 @@ The user will move the mouse to directly control the on-screen Player's position
 
 
 ## Score
-The score continuously goes up.  The final score is determined by the score's value when the player dies.
+The score continuously goes up.  The score increases by 100 when the player acquires a heart.  The final score is determined by the score's value when the player dies.
 
 
 ## Player's Lives
@@ -32,7 +33,9 @@ The player will have one life but multiple health points.  Different enemies wil
 ![UI Screenshot](/images/GameDesignDoc_UIScreenshot.png "UI Screenshot")
 
 #### User interface elements:
-+ NEW GAME button starts a new game, prompting the user first if a game is in progress
-+ QUIT button closes the game, prompting the user first if a game is in progress
-+ Middle region is gameplay region (cursor pictured on top of the Player character)
-+ Below middle region is the Player's health and score.
++ **New Game** button starts a new game, prompting the user first if a game is in progress
++ **Quit** button closes the game, prompting the user first if a game is in progress
++ **Pause** button pauses the game if one is in progress
++ Below the buttons is displayed the player's username, health, score, and invincibility status.
++ Below that is a list of the top 20 scores, which are saved between executions to the file passed in as a parameter when running.
++ The large region is the gameplay space
