@@ -7,6 +7,8 @@
 #include <fstream>
 #include <algorithm> // for sorting scores
 
+#include <iostream>
+
 using namespace std;
 
 
@@ -123,19 +125,21 @@ MainWindow::MainWindow(char* scoreFileName)
 void MainWindow::loadScores()
 {
 	// Load scores
-	ifstream scoreFile(scoreFileName_, ios::in);
-	while(!scoreFile.eof())
+	ifstream scoreFile;
+	scoreFile.open(scoreFileName_, ios::in);
+	while(scoreFile.good()) // if the file is blank, this handles that.
 	{
 		ScorePair newScorePair;
 		scoreFile >> newScorePair.first; // puts the score in
-		if(newScorePair.first == 0) continue; // don't keep scores that are zero, in case any exist
 		scoreFile >> ws; // extracts leading whitespace characters
 		getline(scoreFile, newScorePair.second); // puts the username in
-		if(!newScorePair.second.empty()) scoreData_.push_back(newScorePair);
+		if(newScorePair.first == 0 || newScorePair.second.empty()) continue; // don't keep scores that are zero, in case any exist; also don't keep usernames that are blank
+		scoreData_.push_back(newScorePair);
 	}
-	sort(scoreData_.begin(), scoreData_.end());
+	scoreFile.close();
+	sort(scoreData_.begin(), scoreData_.end()); // just in case file is not in order
 	
-	updateHighScoresList();
+	updateHighScoresList(); // update UI list
 }
 
 /** Helper function to save the current score and username, as well as all the current known high scores to the scores file
@@ -150,14 +154,18 @@ void MainWindow::saveScores()
 		if(!currScorePair.second.empty()) // if a username was entered
 			scoreData_.push_back(currScorePair);
 	}
-	sort(scoreData_.begin(), scoreData_.end());
-	scoreData_.erase(scoreData_.begin(), scoreData_.begin()+scoreData_.size()-20); // remove lowest scores if there are more than 20 scores. This is a slow operation because it's popping from the front of a vector, but that's okay because there should only ever be a maximum of 21 items.
-	
-	ofstream scoreFile("scores.txt", ios::out);
+	sort(scoreData_.begin(), scoreData_.end()); // this line is okay with an empty array
+	if(scoreData_.size() > 20)
+	{
+		scoreData_.erase(scoreData_.begin(), scoreData_.begin()+scoreData_.size()-20); // remove lowest scores if there are more than 20 scores. This is a slow operation because it's popping from the front of a vector, but that's okay because there should only ever be a maximum of 21 items.
+	}
+	ofstream scoreFile;
+	scoreFile.open(scoreFileName_, ios::out);
 	for(unsigned int i = 0; i < scoreData_.size(); i++)
 	{
 		scoreFile << scoreData_[i].first << " " << scoreData_[i].second << endl;
 	}
+	scoreFile.close();
 }
 
 /** Helper function to update the UI scorelist with the scores and usernames in scoreData
@@ -228,17 +236,17 @@ void MainWindow::gameOver()
 	
 	updateHighScoresList();
 	
-	// Pop up game over box
-	QMessageBox gameOverPrompt(gameSpaceUI); // passing gameSpaceUI centers the dialog box over the gameSpace
-	gameOverPrompt.setWindowTitle("Game Over!");
-	QString deathText("Score: ");
-	deathText += QString::number(gameSpaceUI->score());
-	gameOverPrompt.setText(deathText);
-	gameOverPrompt.setInformativeText("Do want to start new game?");
-	gameOverPrompt.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-	gameOverPrompt.setDefaultButton(QMessageBox::Yes);
-	int choice = gameOverPrompt.exec();
-	if(choice==QMessageBox::No) {qApp->quit(); return;}
+	// Pop up:
+		QMessageBox gameOverPrompt(gameSpaceUI); // passing gameSpaceUI centers the dialog box over the gameSpace
+		gameOverPrompt.setWindowTitle("Game Over!");
+		QString deathText("Score: ");
+		deathText += QString::number(gameSpaceUI->score());
+		gameOverPrompt.setText(deathText);
+		gameOverPrompt.setInformativeText("Do want to start new game?");
+		gameOverPrompt.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+		gameOverPrompt.setDefaultButton(QMessageBox::Yes);
+		int choice = gameOverPrompt.exec();
+		if(choice==QMessageBox::No) { qApp->quit(); return; }
 	
 	enterUsername(false);
 	
@@ -246,6 +254,7 @@ void MainWindow::gameOver()
 }
 
 /** Prompts the user to enter a username. On repeated games, starts out with the last entered username by default.
+* @param notifyLastGame Whether or not to include the text " (previous game)" in the title, indicating to the user that this is their last chance to enter their name in order to save their score
 */
 void MainWindow::enterUsername(bool notifyLastGame)
 {
@@ -268,18 +277,18 @@ void MainWindow::startNewGame()
 	if(gameSpaceUI->gameInProgress())
 	{
 		gameSpaceUI->pauseGame(true);
-		QMessageBox newGamePrompt(gameSpaceUI);
-		newGamePrompt.setWindowTitle("Start New Game");
-		newGamePrompt.setText("Game is in progress.");
-		newGamePrompt.setInformativeText("Do you really want to start new game?");
-		newGamePrompt.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-		int choice = newGamePrompt.exec();
-		if(choice==QMessageBox::No) {gameSpaceUI->pauseGame(false); return;}
+		// Prompt:
+			QMessageBox newGamePrompt(gameSpaceUI);
+			newGamePrompt.setWindowTitle("Start New Game");
+			newGamePrompt.setText("Game is in progress.");
+			newGamePrompt.setInformativeText("Do you really want to start new game?");
+			newGamePrompt.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+			int choice = newGamePrompt.exec();
+			if(choice==QMessageBox::No) { gameSpaceUI->pauseGame(false); return; }
+		
+		if(username_.empty()) enterUsername(true);
+		saveScores();
 	}
-	
-	if(gameSpaceUI->gameInProgress() && username_.empty()) enterUsername(true);
-	
-	saveScores();
 	
 	enterUsername(false);
 	
@@ -292,19 +301,20 @@ void MainWindow::startNewGame()
 */
 void MainWindow::quitGame()
 {
-	// Check if a game is in progress
 	if(gameSpaceUI->gameInProgress())
 	{
 		gameSpaceUI->pauseGame(true);
-		QMessageBox quitPrompt(gameSpaceUI);
-		quitPrompt.setWindowTitle("Quit Game");
-		quitPrompt.setText("Game is in progress.");
-		quitPrompt.setInformativeText("Do you really want to quit?");
-		quitPrompt.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-		int choice = quitPrompt.exec();
-		if(choice==QMessageBox::No) {gameSpaceUI->pauseGame(false); return;}
+		// Prompt:
+			QMessageBox quitPrompt(gameSpaceUI);
+			quitPrompt.setWindowTitle("Quit Game");
+			quitPrompt.setText("Game is in progress.");
+			quitPrompt.setInformativeText("Do you really want to quit?");
+			quitPrompt.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+			int choice = quitPrompt.exec();
+			if(choice==QMessageBox::No) {gameSpaceUI->pauseGame(false); return;}
+		if(username_.empty()) enterUsername(true);
+		saveScores();
 	}
-	saveScores();
 	qApp->quit();
 }
 
@@ -315,14 +325,15 @@ void MainWindow::pauseGame()
 	if(gameSpaceUI->gameInProgress())
 	{
 		gameSpaceUI->pauseGame(true);
-		QMessageBox pausePrompt(gameSpaceUI);
-		pausePrompt.setWindowTitle("Pause Game");
-		pausePrompt.setMinimumWidth(600); // otherwise it's way too narrow
-		pausePrompt.setText("Game paused.");
-		pausePrompt.setInformativeText("Press OK to resume.");
-		pausePrompt.setStandardButtons(QMessageBox::Ok);
-		pausePrompt.buttons().at(0)->setFixedWidth(2*pausePrompt.buttons().at(0)->width());
-		pausePrompt.exec();
+		// Prompt:
+			QMessageBox pausePrompt(gameSpaceUI);
+			pausePrompt.setWindowTitle("Pause Game");
+			pausePrompt.setMinimumWidth(600); // otherwise it's way too narrow
+			pausePrompt.setText("Game paused.");
+			pausePrompt.setInformativeText("Press OK to resume.");
+			pausePrompt.setStandardButtons(QMessageBox::Ok);
+			pausePrompt.buttons().at(0)->setFixedWidth(2*pausePrompt.buttons().at(0)->width());
+			pausePrompt.exec();
 		gameSpaceUI->pauseGame(false);
 	}
 }
