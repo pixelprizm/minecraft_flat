@@ -35,7 +35,7 @@ class MainWindow : public QWidget
 	Q_OBJECT
 	
 	public: // Methods
-		explicit MainWindow();
+		explicit MainWindow(char* scoreFileName);
 		
 		void gameOver();
 		void enterUsername();
@@ -60,8 +60,17 @@ class MainWindow : public QWidget
 				QPushButton* quitButtonUI;
 				/** Pointer to pause button */
 				QPushButton* pauseButtonUI;
-				/** Pointer to username label */
-				QLabel* usernameUI;
+				
+				/** Pointer to layout for username and level layout */
+				QHBoxLayout* usernameLevelLayoutUI;
+					/** Pointer to username label */
+					QLabel* usernameUI;
+					/** Pointer to level layout */
+					QHBoxLayout* levelLayoutUI;
+						/** Pointer to level label */
+						QLabel* levelLabelUI;
+						/** Pointer to level value */
+						QLabel* levelUI;
 				/** Pointer to layout for health label and health value */
 				QHBoxLayout* healthLayoutUI;
 					/** Pointer to health label */
@@ -97,6 +106,8 @@ class MainWindow : public QWidget
 		std::string username_;
 		/** list of score-username pairs */
 		std::vector<ScorePair> scoreData_;
+		/** filename of the score file to be read and written */
+		char* scoreFileName_;
 };
 
 #endif // MAINWINDOW_H

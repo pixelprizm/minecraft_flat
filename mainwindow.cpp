@@ -12,7 +12,7 @@ using namespace std;
 
 /** Constructor. Builds the game's main window UI.
 */
-MainWindow::MainWindow()
+MainWindow::MainWindow(char* scoreFileName)
 {
 	this->setWindowTitle("Minecraft Flat!");
 	
@@ -34,10 +34,24 @@ MainWindow::MainWindow()
 				connect(pauseButtonUI, SIGNAL(clicked()), this, SLOT(pauseGame()));
 			leftLayoutUI->addWidget(pauseButtonUI);
 			
-			// Username
-				usernameUI = new QLabel(this);
-				usernameUI->setAlignment(Qt::AlignHCenter);
-			leftLayoutUI->addWidget(usernameUI);
+			// Username and level
+				usernameLevelLayoutUI = new QHBoxLayout;
+				// Username
+					usernameUI = new QLabel(this);
+					usernameUI->setAlignment(Qt::AlignLeft);
+				usernameLevelLayoutUI->addWidget(usernameUI);
+				// Level
+					levelLayoutUI = new QHBoxLayout; // this is used in order to keep the code modular
+					// The word "Level:"
+						levelLabelUI = new QLabel(this);
+						levelLabelUI->setAlignment(Qt::AlignRight);
+					levelLayoutUI->addWidget(levelLabelUI);
+					// Current level
+						levelUI = new QLabel(this);
+						levelUI->setAlignment(Qt::AlignRight);
+					levelLayoutUI->addWidget(levelUI);
+				usernameLevelLayoutUI->addLayout(levelLayoutUI);
+			leftLayoutUI->addLayout(usernameLevelLayoutUI);
 			// Health
 				healthLayoutUI = new QHBoxLayout;
 				// The word "health:"
@@ -99,6 +113,7 @@ MainWindow::MainWindow()
 		
 	this->setLayout(mainLayoutUI);
 	
+	scoreFileName_ = scoreFileName;
 	loadScores();
 }
 
@@ -113,7 +128,7 @@ MainWindow::MainWindow()
 void MainWindow::loadScores()
 {
 	// Load scores
-	ifstream scoreFile("scores.txt", ios::in);
+	ifstream scoreFile(scoreFileName_, ios::in);
 	while(!scoreFile.eof())
 	{
 		ScorePair newScorePair;
@@ -176,6 +191,8 @@ void MainWindow::updateLabels()
 	if(gameSpaceUI->gameInProgress())
 	{
 		usernameUI->setText(username_.c_str());
+		levelLabelUI->setText("Level:");
+		levelUI->setText(QString::number(gameSpaceUI->level()));
 		healthLabelUI->setText("Health:");
 		healthUI->setText(QString::number(gameSpaceUI->player()->health()));
 		scoreLabelUI->setText("Score:");
@@ -194,6 +211,8 @@ void MainWindow::updateLabels()
 	else
 	{
 		usernameUI->setText("");
+		levelLabelUI->setText("");
+		levelUI->setText("");
 		healthLabelUI->setText("");
 		healthUI->setText("");
 		scoreLabelUI->setText("");
@@ -210,6 +229,8 @@ void MainWindow::gameOver()
 	gameSpaceUI->pauseGame(true);
 	gameSpaceUI->gameOverFlag() = true;
 	
+	if(username_.empty()) enterUsername();
+	
 	saveScores();
 	
 	updateHighScoresList();
@@ -219,7 +240,6 @@ void MainWindow::gameOver()
 	gameOverPrompt.setWindowTitle("Game Over!");
 	QString deathText("Score: ");
 	deathText += QString::number(gameSpaceUI->score());
-	deathText += "\nScore saved.";
 	gameOverPrompt.setText(deathText);
 	gameOverPrompt.setInformativeText("Do want to start new game?");
 	gameOverPrompt.setStandardButtons(QMessageBox::Yes | QMessageBox::No);

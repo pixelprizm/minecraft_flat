@@ -49,6 +49,8 @@ class GameSpace : public QGraphicsView
 		bool& gameOverFlag() { return gameOverFlag_; }
 		/** Get a pointer to the player */
 		Steve* player() { return player_; }
+		/** Get the current level */
+		int level() { return level_; }
 	
 	public slots:
 		void handleTimer();

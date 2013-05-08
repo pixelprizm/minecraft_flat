@@ -1,4 +1,5 @@
 #include <QtGui/QApplication>
+#include <iostream> // for error message
 #include "mainwindow.h"
 
 /** Main function, just starts the GUI program
@@ -7,10 +8,11 @@
 */
 int main(int argc, char* argv[])
 {
-	QApplication puz(argc, argv);
-	MainWindow w;
+	if(argc < 2) { std::cerr << "Usage: " << argv[0] << " <scores-file-name>" << std::endl; return 1; }
+	QApplication game(argc, argv);
+	MainWindow w(argv[1]);
 	
 	w.show();
 	
-	return puz.exec();
+	return game.exec();
 }
