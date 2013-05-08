@@ -38,7 +38,7 @@ class MainWindow : public QWidget
 		explicit MainWindow(char* scoreFileName);
 		
 		void gameOver();
-		void enterUsername();
+		void enterUsername(bool notifyLastGame);
 		void loadScores();
 		void saveScores();
 		void updateHighScoresList();
@@ -65,12 +65,8 @@ class MainWindow : public QWidget
 				QHBoxLayout* usernameLevelLayoutUI;
 					/** Pointer to username label */
 					QLabel* usernameUI;
-					/** Pointer to level layout */
-					QHBoxLayout* levelLayoutUI;
-						/** Pointer to level label */
-						QLabel* levelLabelUI;
-						/** Pointer to level value */
-						QLabel* levelUI;
+					/** Pointer to level value */
+					QLabel* levelUI;
 				/** Pointer to layout for health label and health value */
 				QHBoxLayout* healthLayoutUI;
 					/** Pointer to health label */

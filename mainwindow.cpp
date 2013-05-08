@@ -41,16 +41,9 @@ MainWindow::MainWindow(char* scoreFileName)
 					usernameUI->setAlignment(Qt::AlignLeft);
 				usernameLevelLayoutUI->addWidget(usernameUI);
 				// Level
-					levelLayoutUI = new QHBoxLayout; // this is used in order to keep the code modular
-					// The word "Level:"
-						levelLabelUI = new QLabel(this);
-						levelLabelUI->setAlignment(Qt::AlignRight);
-					levelLayoutUI->addWidget(levelLabelUI);
-					// Current level
-						levelUI = new QLabel(this);
-						levelUI->setAlignment(Qt::AlignRight);
-					levelLayoutUI->addWidget(levelUI);
-				usernameLevelLayoutUI->addLayout(levelLayoutUI);
+					levelUI = new QLabel(this);
+					levelUI->setAlignment(Qt::AlignRight);
+				usernameLevelLayoutUI->addWidget(levelUI);
 			leftLayoutUI->addLayout(usernameLevelLayoutUI);
 			// Health
 				healthLayoutUI = new QHBoxLayout;
@@ -115,6 +108,8 @@ MainWindow::MainWindow(char* scoreFileName)
 	
 	scoreFileName_ = scoreFileName;
 	loadScores();
+	
+	updateLabels();
 }
 
 
@@ -191,8 +186,7 @@ void MainWindow::updateLabels()
 	if(gameSpaceUI->gameInProgress())
 	{
 		usernameUI->setText(username_.c_str());
-		levelLabelUI->setText("Level:");
-		levelUI->setText(QString::number(gameSpaceUI->level()));
+		levelUI->setText("Level: "+QString::number(gameSpaceUI->level()));
 		healthLabelUI->setText("Health:");
 		healthUI->setText(QString::number(gameSpaceUI->player()->health()));
 		scoreLabelUI->setText("Score:");
@@ -211,7 +205,6 @@ void MainWindow::updateLabels()
 	else
 	{
 		usernameUI->setText("");
-		levelLabelUI->setText("");
 		levelUI->setText("");
 		healthLabelUI->setText("");
 		healthUI->setText("");
@@ -229,7 +222,7 @@ void MainWindow::gameOver()
 	gameSpaceUI->pauseGame(true);
 	gameSpaceUI->gameOverFlag() = true;
 	
-	if(username_.empty()) enterUsername();
+	if(username_.empty()) enterUsername(true);
 	
 	saveScores();
 	
@@ -247,16 +240,18 @@ void MainWindow::gameOver()
 	int choice = gameOverPrompt.exec();
 	if(choice==QMessageBox::No) {qApp->quit(); return;}
 	
-	enterUsername();
+	enterUsername(false);
 	
 	gameSpaceUI->startLevel(false, 1);
 }
 
 /** Prompts the user to enter a username. On repeated games, starts out with the last entered username by default.
 */
-void MainWindow::enterUsername()
+void MainWindow::enterUsername(bool notifyLastGame)
 {
-	username_ = QInputDialog::getText(this, tr("Enter Username"), tr("You must enter a username for your score to be saved."), QLineEdit::Normal, username_.c_str()).toStdString();
+	QString lastGame;
+	if(notifyLastGame) lastGame += " (previous game)";
+	username_ = QInputDialog::getText(this, "Enter Username"+lastGame, "You must enter a username for your score to be saved.", QLineEdit::Normal, username_.c_str()).toStdString();
 }
 
 
@@ -282,9 +277,11 @@ void MainWindow::startNewGame()
 		if(choice==QMessageBox::No) {gameSpaceUI->pauseGame(false); return;}
 	}
 	
+	if(gameSpaceUI->gameInProgress() && username_.empty()) enterUsername(true);
+	
 	saveScores();
 	
-	enterUsername();
+	enterUsername(false);
 	
 	updateHighScoresList();
 	
