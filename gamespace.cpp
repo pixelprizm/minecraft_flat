@@ -1,7 +1,6 @@
 #include "gamespace.h"
 #include "mainwindow.h"
 #include <ctime> // for rand seed
-#include <QMouseEvent>
 
 
 
@@ -19,9 +18,13 @@ GameSpace::GameSpace(MainWindow* parent)
 	setScene(scene_);
 	
 	// Create the background (important that this is the first image added to the scene)
-	backgroundPic_ = new QPixmap("images/sand_background_800.png");
-	backgroundPicItem_ = new QGraphicsPixmapItem(*backgroundPic_);
+	backgroundPics_.push_back(new QPixmap("images/dirt_background_800.png")); // 0 (theoretically, a title screen)
+	backgroundPics_.push_back(new QPixmap("images/dirt_background_800.png")); // 1
+	backgroundPics_.push_back(new QPixmap("images/netherBrick_background_800.png")); // 2
+	backgroundPics_.push_back(new QPixmap("images/whiteStone_background_800.png")); // 3
+	backgroundPicItem_ = new QGraphicsPixmapItem(*backgroundPics_[0]);
 	scene_->addItem(backgroundPicItem_);
+	backgroundPicItem_->setZValue(-1);
 	
 	// Initialize player
 	stevePic_ = new QPixmap("images/steve.png");
@@ -40,7 +43,7 @@ GameSpace::GameSpace(MainWindow* parent)
 	
 	// Initialize timer
 	timer_ = new QTimer(this);
-	timer_->setInterval(1); // this is kept low so that the player's update speed is fast
+	timer_->setInterval(1); // this is kept low so that the player's update speed is fast and so we have specific control over the speed of all game events
 	connect(timer_, SIGNAL(timeout()), this, SLOT(handleTimer()));
 	
 	// Enable mouse capture
@@ -49,6 +52,9 @@ GameSpace::GameSpace(MainWindow* parent)
 	
 	// Initialize score
 	score_ = 0;
+	
+	// Initialize level
+	level_ = 0; // because we haven't started a game yet
 	
 	// Initialize game status flags
 	gameInProgress_ = false;
@@ -82,23 +88,16 @@ GameSpace::~GameSpace()
 // ---------------------------------- MODIFIERS -------------------------------
 // ============================================================================
 
-/** Start a new game. First deletes old data, then creates and initializes new data
+/** Helper function to initialize the values of the game.  This is called whenever a level begins or the game restarts.
 */
-void GameSpace::startNewGame()
+void GameSpace::initialize()
 {
-	timer_->stop();
-	
-	if(player_) {delete player_;} // get rid of old player so we create a new one, correctly initialized
-	
-	// Initialize player values
-	player_ = new Steve(*stevePic_, this);
-	player_->setPos(WINDOW_MAX_X/2,WINDOW_MAX_Y/2);
-	player_->moveTo(WINDOW_MAX_X/2,WINDOW_MAX_Y/2); // so that the player does not move to a random location on game start
-	scene_->addItem(player_);
-	
-	// If there was a previous game, get rid of the enemies (they remove themselves from the scene)
-	if(gameInProgress_)
-	{
+	// First, initialize the player
+		if(player_) {delete player_;} // get rid of old player so we create a new one, correctly initialized
+		player_ = new Steve(*stevePic_, this);
+		player_->setPos(width()/2,height()/2);
+		scene_->addItem(player_);
+	// Then, get rid of any enemies and items
 		while(!enemies_.empty())
 		{
 			delete enemies_.back();
@@ -109,17 +108,45 @@ void GameSpace::startNewGame()
 			delete items_.back();
 			items_.pop_back();
 		}
-	}
-	
-	
 	
 	// Initialize values used in controlling speed of the game
-	timerCount_ = 1; // it's 1 so that items & enemies don't spawn instantly
-	period_ = 28;
-	periodCount_ = 1; // it's 1 so that items & enemies don't spawn instantly
+		timerCount_ = 1; // it's 1 so that items & enemies don't spawn instantly
+		period_ = 28;
+		periodCount_ = 1; // it's 1 so that items & enemies don't spawn instantly
 	
 	// Initialize score
-	score_ = 0;
+		score_ = 0;
+}
+
+/** Start a new game at the passed-in level.
+* @param maintainGame Whether or not to keep game Things and score
+* @param level The level to start the game at
+*/
+void GameSpace::startLevel(bool maintainGame, int level)
+{
+	level_ = level;
+	startLevel(maintainGame);
+}
+
+/** Start a new game at the current level number. First deletes old data, then creates and initializes new data
+* @param maintainGame Whether or not to keep game Things and score
+*/
+void GameSpace::startLevel(bool maintainGame)
+{
+	// Stop the timer in case a game had already started
+	timer_->stop();
+	
+	// Initialize the game if desired
+	if(!maintainGame) initialize();
+	timerCount_ = 1;
+	periodCount_ = 1;
+	
+	// Change the background to the one for this level
+	scene_->removeItem(backgroundPicItem_);
+	delete backgroundPicItem_;
+	backgroundPicItem_ = new QGraphicsPixmapItem(*backgroundPics_[level_]);
+	scene_->addItem(backgroundPicItem_);
+	backgroundPicItem_->setZValue(-1);
 	
 	// Set game status flags
 	gameOverFlag_ = false;
@@ -140,8 +167,6 @@ void GameSpace::pauseGame(bool pause)
 	if(pause) { timer_->stop(); }
 	else { timer_->start(); }
 }
-
-
 
 /** Called when the mouse is moved. Updates Steve's target location.
 * @param event Data for the mouse event (used for location)
@@ -171,24 +196,26 @@ void GameSpace::handleTimer()
 	if(timerCount_ % 300 == 0 && player_->invincible()) { player_->invincible()--; }
 		
 	// Add a new strength potion every number of periods below
-	if(timerCount_ % 20000 == 0)
+	if(timerCount_ % 20000 == 0 && level_ > 1)
 	{
 		Item* newItem = new PotionStrength(*potionStrengthPic_, this, player_);
-		// Initialize the potion's position, add it to vector, add it to the scene
+		// Initialize the potion's position, add it to items list, add it to the scene
 		newItem->randomPos(WINDOW_MAX_X, WINDOW_MAX_Y);
 		items_.push_back(newItem);
 		scene_->addItem(newItem);
 	}
+		
+	// Check if new level is reached
+	if( (timerCount_%(50000+30000*level_) == 0) && (level_ < 3)) { startLevel(true, level_+1); return; }
 	
 	if(timerCount_ % period_ == 0)
 	{
 		// ------------------- ADD NEW THINGS ----------------------
-		
 			// Add a new enemy every specified number of periods
 			if(periodCount_ % 63 == 0)
 			{
 				Thing* newEnemy = NULL;
-				switch(rand()%5)
+				switch(rand()%(level_+2))
 				{
 					case 0: newEnemy = new Zombie(*zombiePic_, this, player_);
 						break;
@@ -201,15 +228,12 @@ void GameSpace::handleTimer()
 					case 4: newEnemy = new Enderman(*endermanPic_, this, player_);
 						break;
 				}
-			
 				// Initialize the enemy's position
 				newEnemy->randomPos(WINDOW_MAX_X, WINDOW_MAX_Y);
-			
 				// Add the enemy to the list of enemies and to the scene
 				enemies_.push_back(newEnemy);
 				scene_->addItem(newEnemy);
 			}
-		
 			// Add a new heart every number of periods below
 			if(periodCount_ % 376 == 0)
 			{
@@ -252,7 +276,7 @@ void GameSpace::handleTimer()
 			}
 		
 		// Update score
-		if(periodCount_ % 4 == 0 && !gameOverFlag_){ score_++; parent()->scoreUI->setNum(score_);}
+		if(periodCount_ % 4 == 0 && !gameOverFlag_) score_++;
 		
 		// Update MainWindow's labels
 		parent_->updateLabels();

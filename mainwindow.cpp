@@ -6,9 +6,6 @@
 
 #include <fstream>
 #include <algorithm> // for sorting scores
-//#include <sstream> // for inserting scores into 
-
-#include <iostream>
 
 using namespace std;
 
@@ -83,7 +80,7 @@ MainWindow::MainWindow()
 			// High scores list
 				highScoresLayoutUI = new QVBoxLayout;
 				// The words "High Scores:"
-					highScoresLabelUI = new QLabel("High Scores:",this);
+					highScoresLabelUI = new QLabel("Top 20 Scores:",this);
 				highScoresLayoutUI->addWidget(highScoresLabelUI);
 				// The high scores list box
 					highScoresListUI = new QListWidget(this);
@@ -131,7 +128,7 @@ void MainWindow::loadScores()
 	updateHighScoresList();
 }
 
-/** Helper function to save the current score and username to the scores file
+/** Helper function to save the current score and username, as well as all the current known high scores to the scores file
 */
 void MainWindow::saveScores()
 {
@@ -140,9 +137,11 @@ void MainWindow::saveScores()
 		ScorePair currScorePair;
 		currScorePair.first = gameSpaceUI->score();
 		currScorePair.second = username_;
-		if(!currScorePair.second.empty()) scoreData_.push_back(currScorePair);
+		if(!currScorePair.second.empty()) // if a username was entered
+			scoreData_.push_back(currScorePair);
 	}
 	sort(scoreData_.begin(), scoreData_.end());
+	scoreData_.erase(scoreData_.begin(), scoreData_.begin()+scoreData_.size()-20); // remove lowest scores if there are more than 20 scores. This is a slow operation because it's popping from the front of a vector, but that's okay because there should only ever be a maximum of 21 items.
 	
 	ofstream scoreFile("scores.txt", ios::out);
 	for(unsigned int i = 0; i < scoreData_.size(); i++)
@@ -158,12 +157,13 @@ void MainWindow::updateHighScoresList()
 	highScoresListUI->clear();
 	for(int i = scoreData_.size()-1; i >= 0; i--)
 	{
-		QString temp(QString::number(scoreData_[i].first));
-		if(scoreData_[i].first < 10000) temp += " ";
-		if(scoreData_[i].first < 1000) temp += " ";
-		if(scoreData_[i].first < 100) temp += " ";
-		if(scoreData_[i].first < 10) temp += " ";
-		temp += " ";
+		QString temp;
+		temp += QString::number(scoreData_[i].first);
+		if(scoreData_[i].first < 10000) temp += "  ";
+		if(scoreData_[i].first < 1000) temp += "  ";
+		if(scoreData_[i].first < 100) temp += "  ";
+		if(scoreData_[i].first < 10) temp += "  ";
+		temp += "  ";
 		temp += scoreData_[i].second.c_str();
 		highScoresListUI->addItem(temp);
 	}
@@ -212,6 +212,8 @@ void MainWindow::gameOver()
 	
 	saveScores();
 	
+	updateHighScoresList();
+	
 	// Pop up game over box
 	QMessageBox gameOverPrompt(gameSpaceUI); // passing gameSpaceUI centers the dialog box over the gameSpace
 	gameOverPrompt.setWindowTitle("Game Over!");
@@ -225,18 +227,16 @@ void MainWindow::gameOver()
 	int choice = gameOverPrompt.exec();
 	if(choice==QMessageBox::No) {qApp->quit(); return;}
 	
-	enterUsernameAndStartGame();
+	enterUsername();
+	
+	gameSpaceUI->startLevel(false, 1);
 }
 
-/** Prompts the user to enter a username, then starts the game. On repeated games, starts out with the last entered username by default.
+/** Prompts the user to enter a username. On repeated games, starts out with the last entered username by default.
 */
-void MainWindow::enterUsernameAndStartGame()
+void MainWindow::enterUsername()
 {
 	username_ = QInputDialog::getText(this, tr("Enter Username"), tr("You must enter a username for your score to be saved."), QLineEdit::Normal, username_.c_str()).toStdString();
-	
-	updateHighScoresList();
-	
-	gameSpaceUI->startNewGame();
 }
 
 
@@ -264,7 +264,11 @@ void MainWindow::startNewGame()
 	
 	saveScores();
 	
-	enterUsernameAndStartGame();
+	enterUsername();
+	
+	updateHighScoresList();
+	
+	gameSpaceUI->startLevel(false, 1);
 }
 
 /** Prompt the user to quit the game.
@@ -278,7 +282,7 @@ void MainWindow::quitGame()
 		QMessageBox quitPrompt(gameSpaceUI);
 		quitPrompt.setWindowTitle("Quit Game");
 		quitPrompt.setText("Game is in progress.");
-		quitPrompt.setInformativeText("Do you really want to quit?\nScore will be saved.");
+		quitPrompt.setInformativeText("Do you really want to quit?");
 		quitPrompt.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
 		int choice = quitPrompt.exec();
 		if(choice==QMessageBox::No) {gameSpaceUI->pauseGame(false); return;}

@@ -13,8 +13,9 @@ Steve::Steve(QPixmap& picture, GameSpace* parent)
 	Thing(picture, parent, NULL) // pass NULL as the player pointer to Thing because this is the player
 {
 	health_ = 10;
-	moveToX_ = 0;
-	moveToY_ = 0;
+	moveToX_ = parent->width()/2;
+	moveToY_ = parent->height()/2;
+	setZValue(1);
 	speedLimit_ = .2; // note: this does not directly correspond with enemies' speed because the player's move function is called more frequently than the enemies.
 	invincible_ = 0; // starts out not invincible
 }

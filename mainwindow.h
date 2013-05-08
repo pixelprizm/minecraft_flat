@@ -9,7 +9,7 @@
 #include <QLabel>
 #include <QListWidget>
 
-#include <utility> // for pair (for ScorePair struct)
+#include <utility> // for std::pair (for ScorePair struct)
 #include <vector> // for list of ScorePairs
 #include <string>
 
@@ -34,12 +34,11 @@ class MainWindow : public QWidget
 {
 	Q_OBJECT
 	
-	public: // Member functions
+	public: // Methods
 		explicit MainWindow();
-		void gameOver();
-		void enterUsernameAndStartGame();
 		
-		// Helper functions
+		void gameOver();
+		void enterUsername();
 		void loadScores();
 		void saveScores();
 		void updateHighScoresList();
@@ -50,7 +49,7 @@ class MainWindow : public QWidget
 		void quitGame();
 		void pauseGame();
 	
-	public: // UI elements
+	public: // Properties: UI
 		/** Pointer to entire window's layout */
 		QHBoxLayout* mainLayoutUI;
 			/** Pointer to vertical layout to the left of the gameplay area */
@@ -92,7 +91,7 @@ class MainWindow : public QWidget
 				/** Pointer to gameplay area of the window */
 				GameSpace* gameSpaceUI;
 	
-	private: // Data members
+	private: // Properties: data
 		// note: use gameSpaceUI->score() for current score.
 		/** Current user's username */
 		std::string username_;
