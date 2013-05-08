@@ -1,7 +1,7 @@
 # Game Design Document
 My game will be a continuous survival game whose characters are based on the Minecraft characters (mobs)
 
-## Characters
+### Characters
 #### Player:
 ![Steve](/images/steve.png "Steve") The Player will be freely controlled by the mouse, independent of the game's speeding up.
 #### Enemies:
@@ -16,26 +16,34 @@ My game will be a continuous survival game whose characters are based on the Min
 + ![Strength Potion](/images/potion_strength.png "Strength Potion") Strength Potions will grant the player invincibility for a limited amount of time, as displayed on the window's left.  They will move in small circles.
 
 
-## Gameplay
+### Gameplay
 The user will move the mouse to directly control the on-screen Player's position, avoiding the mobs for as long as possible.  The player has a maximum speed, and the player follows the mouse cursor.
 
 
-## Score
-The score continuously goes up.  The score increases by 100 when the player acquires a heart.  The final score is determined by the score's value when the player dies.
+### Score
+The score continuously increases as the game goes on.  The score increases by 100 when the player acquires a heart.  The final score is determined by the score's value when the player dies.
 
 
-## Player's Lives
+### Levels
+There are three levels, with different backgrounds.  The player reaches the next levels after a certain period of time; first, around the time the player's score reaches 1500, then again around the time the player's score reaches 4500.
+Levels:
+1. Dirt background.  Zombies, Creepers, and Spiders are the only enemies present here.  Hearts are present.
+1. Nether-brick background.  Skeletons and Strength Potions are added to the game.
+1. End-stone background.  Endermen are added to the game.
+
+
+### Player's Lives
 The player will have one life but multiple health points.  Different enemies will do different amounts of damage.
 
 
-## User Interface
+### User Interface
 #### Screenshot:
 ![UI Screenshot](/images/GameDesignDoc_UIScreenshot.png "UI Screenshot")
 
 #### User interface elements:
-+ **New Game** button starts a new game, prompting the user first if a game is in progress
-+ **Quit** button closes the game, prompting the user first if a game is in progress
-+ **Pause** button pauses the game if one is in progress
-+ Below the buttons is displayed the player's username, health, score, and invincibility status.
++ **New Game** button starts a new game, prompting the user first if a game is in progress.
++ **Quit** button closes the game, prompting the user first if a game is in progress.
++ **Pause** button pauses the game if one is in progress.
++ Below the buttons is displayed the player's username, level, health, score, and invincibility status.
 + Below that is a list of the top 20 scores, which are saved between executions to the file passed in as a parameter when running.
-+ The large region is the gameplay space
++ The large region is the gameplay space.
