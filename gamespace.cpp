@@ -1,3 +1,7 @@
+// Copyright (C) 2013 Eric Gauderman
+
+
+
 #include "gamespace.h"
 #include "mainwindow.h"
 #include <ctime> // for rand seed

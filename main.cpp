@@ -1,3 +1,7 @@
+// Copyright (C) 2013 Eric Gauderman
+
+
+
 #include <QtGui/QApplication>
 #include <iostream> // for error message
 #include "mainwindow.h"

@@ -1,3 +1,7 @@
+// Copyright (C) 2013 Eric Gauderman
+
+
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 

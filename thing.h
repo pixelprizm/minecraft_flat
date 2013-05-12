@@ -1,3 +1,7 @@
+// Copyright (C) 2013 Eric Gauderman
+
+
+
 #ifndef THING_H
 #define THING_H
 

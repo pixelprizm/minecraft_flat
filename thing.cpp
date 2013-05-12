@@ -1,3 +1,7 @@
+// Copyright (C) 2013 Eric Gauderman
+
+
+
 #include "thing.h"
 #include "gamespace.h"
 

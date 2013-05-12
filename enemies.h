@@ -1,3 +1,7 @@
+// Copyright (C) 2013 Eric Gauderman
+
+
+
 #ifndef ENEMIES_H
 #define ENEMIES_H
 

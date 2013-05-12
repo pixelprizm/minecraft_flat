@@ -1,3 +1,7 @@
+// Copyright (C) 2013 Eric Gauderman
+
+
+
 #ifndef GAMESPACE_H
 #define GAMESPACE_H
 

@@ -1,3 +1,7 @@
+// Copyright (C) 2013 Eric Gauderman
+
+
+
 #ifndef ITEMS_H
 #define ITEMS_H
 

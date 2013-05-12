@@ -1,3 +1,9 @@
+// Minecraft Flat! -- A top-down endless survival game based on the Minecraft characters
+// Copyright (C) 2013 Eric Gauderman
+// This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License version 2.0 as published by the Free Software Foundation.
+
+
+
 #include "mainwindow.h"
 #include "gamespace.h"
 

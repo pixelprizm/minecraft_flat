@@ -1,3 +1,7 @@
+// Copyright (C) 2013 Eric Gauderman
+
+
+
 #include "steve.h"
 #include "mainwindow.h"
 #include "gamespace.h" // for use of parent pointer

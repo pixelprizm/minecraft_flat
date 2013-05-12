@@ -1,35 +1,35 @@
-# Game Programming Assignment Repository
-### Student Information
-  + Name: Eric Gauderman
-  + USC email: gauderma@usc.edu
-  + USC ID: 2865 5123 61
+# Minecraft Flat!
+This is a game created for my Computer Science 102 course's final project in Spring 2013.
+It is a top-down endless survival game using the Minecraft characters.
+See the [Game Design Document](GameDesignDoc.md) for a detailed description of the game.
 
-### Game Information
-  + Game Name: Minecraft Flat!
-  + Game Description: A top-down endless survival game.
-  + [Game Design Doc](GameDesignDoc.md)
-
+#### Copyright and license information
+Copyright (C) 2013 Eric Gauderman
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License version 2.0 as published by the Free Software Foundation.
+See the [LICENSE](LICENSE.txt) for the full text of the GNU General Public License version 2.0.
 
 ### Compile & Run Instructions
-The grader should use the following procedure to compile and run the code:
 #### Compile Instructions
+The user should use the following procedure to compile the code, in a Linux terminal, with Qt 4.8 or higher installed:
 ```shell
 qmake -project
 qmake
 make
 ```
 #### Doxygen Instructions
+The user should use the following procedure to generate and view Doxygen-generated documentation for this project, in a Linux terminal, with Doxygen installed:
 ```shell
 doxygen -g config.txt
 doxygen config.txt
 firefox html/index.html
 ```
-#### Command to run
-For a pre-filled list of high scores:
+#### Commands to run
+The user should use one of the following commands to run the program (from a Linux terminal):
+To begin with a pre-filled list of high scores:
 ```shell
-./game_gauderma example_scores.txt
+./minecraft_flat example_scores.txt
 ```
-For a new, empty list of high scores:
+To begin with a new, empty list of high scores:
 ```shell
-./game_gauderma scores.txt
+./minecraft_flat scores.txt
 ```
