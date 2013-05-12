@@ -25,6 +25,7 @@ firefox html/index.html
 ```
 #### Commands to run
 The user should use one of the following commands to run the program (from a Linux terminal):
+
 To begin with a pre-filled list of high scores:
 ```shell
 ./minecraft_flat example_scores.txt
